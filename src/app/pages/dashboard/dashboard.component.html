@@ -1,0 +1,170 @@
+<!-- src/app/pages/dashboard/dashboard.component.html -->
+
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Pregled statistike saobraćajne policije</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje statistike...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading() && statistika()" class="dashboard-content">
+    
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <!-- Ukupno Incidenata -->
+      <mat-card class="stat-card incidents">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>warning</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.ukupnoIncidenata || 0 }}</h3>
+            <p>Ukupno Incidenata</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ukupno Kazni -->
+      <mat-card class="stat-card fines">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>gavel</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.ukupnoKazni || 0 }}</h3>
+            <p>Ukupno Kazni</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ukupno Vozača -->
+      <mat-card class="stat-card drivers">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.ukupnoVozaca || 0 }}</h3>
+            <p>Ukupno Vozača</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ukupno Vozila -->
+      <mat-card class="stat-card vehicles">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>directions_car</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.ukupnoVozila || 0 }}</h3>
+            <p>Ukupno Vozila</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Neispravne Signalizacije -->
+      <mat-card class="stat-card signals">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>traffic</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.neispravneSignalizacije || 0 }}</h3>
+            <p>Neispravne Signalizacije</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Aktivni Zahtevi -->
+      <mat-card class="stat-card requests">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ statistika()?.aktivniZahtevi || 0 }}</h3>
+            <p>Aktivni Zahtevi</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <!-- Incidenti po težini -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Incidenti po Težini</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="severity-list">
+            <div *ngFor="let item of statistika()?.incidentiPoTezini | keyvalue" class="severity-item">
+              <mat-icon [class]="'severity-icon ' + item.key">{{ getTezinaIcon(item.key) }}</mat-icon>
+              <div class="severity-info">
+                <span class="severity-label">{{ item.key }}</span>
+                <span class="severity-count">{{ item.value }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Kazne po statusu -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Kazne po Statusu</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-list">
+            <div *ngFor="let item of statistika()?.kaznePoStatusu | keyvalue" class="status-item">
+              <div class="status-info">
+                <span class="status-label">{{ item.key }}</span>
+                <span class="status-count">{{ item.value }}</span>
+              </div>
+              <div class="status-bar">
+                <div class="status-bar-fill" [style.width.%]="(item.value / statistika()!.ukupnoKazni) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Recent Incidents -->
+    <mat-card class="recent-card">
+      <mat-card-header>
+        <mat-card-title>Najnoviji Incidenti</mat-card-title>
+        <button mat-button color="primary" routerLink="/app/incidenti">Vidi sve</button>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="najnovijiIncidenti().length === 0" class="no-data">
+          <mat-icon>info</mat-icon>
+          <p>Nema dostupnih incidenata</p>
+        </div>
+        <div class="incidents-list">
+          <div *ngFor="let incident of najnovijiIncidenti()" class="incident-item">
+            <mat-icon [class]="'incident-icon ' + incident.tezinaIncidenta">
+              {{ getTezinaIcon(incident.tezinaIncidenta) }}
+            </mat-icon>
+            <div class="incident-info">
+              <h4>{{ incident.lokacija }}</h4>
+              <p>{{ incident.datumVreme | date:'dd.MM.yyyy HH:mm' }} - {{ incident.tezinaIncidenta }}</p>
+            </div>
+            <button mat-icon-button routerLink="/app/incidenti/{{ incident.idIncidenta }}/edit">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
