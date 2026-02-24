@@ -46,7 +46,8 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
 }
 
 .stat-card mat-card-content {
@@ -126,6 +127,7 @@
 .severity-list {
   display: flex;
   flex-direction: column;
+  font-size: 1rem;
   gap: 1rem;
 }
 
@@ -135,12 +137,13 @@
   gap: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  background-color: #f8fafc;
+  background-color: rgba(255, 255, 255, 0.35);
   transition: background-color 0.2s;
 }
 
 .severity-item:hover {
-  background-color: #f1f5f9;
+  background-color: white;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.233);
 }
 
 .severity-icon {
@@ -193,7 +196,11 @@
 .status-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 3rem;
+  font-size: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.35);
 }
 
 .status-item {
@@ -255,7 +262,7 @@
 }
 
 .incident-item:hover {
-  background-color: #f1f5f9;
+  background-color: #d0e3f6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

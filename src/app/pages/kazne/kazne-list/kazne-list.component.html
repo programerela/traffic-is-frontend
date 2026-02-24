@@ -1,0 +1,92 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Kazne</h1>
+      <p class="page-subtitle">Pregled svih registrovanih kazni</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="new">
+      <mat-icon>add</mat-icon>
+      Nova Kazna
+    </button>
+  </div>
+
+  <mat-card class="filter-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pretraži kazne</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Opis, status, vrsta..." />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-card *ngIf="!loading()" class="table-card">
+    <table mat-table [dataSource]="filteredKazne()" class="data-table">
+      <ng-container matColumnDef="idKazne">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let kazna">#{{ kazna.idKazne }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="datumIzdavanja">
+        <th mat-header-cell *matHeaderCellDef>Datum izdavanja</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.datumIzdavanja }}</td>
+      </ng-container>
+      <ng-container matColumnDef="iznos">
+        <th mat-header-cell *matHeaderCellDef>Iznos (RSD)</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.iznos | number: '1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="opisPrekrsaja">
+        <th mat-header-cell *matHeaderCellDef>Opis</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.opisPrekrsaja }}</td>
+      </ng-container>
+      <ng-container matColumnDef="statusPlacanja">
+        <th mat-header-cell *matHeaderCellDef>Status Plaćanja</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.statusPlacanja }}</td>
+      </ng-container>
+      <ng-container matColumnDef="vrstaPrekrsaja">
+        <th mat-header-cell *matHeaderCellDef>Vrsta Prekršaja</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.vrstaPrekrsaja }}</td>
+      </ng-container>
+      <ng-container matColumnDef="idVozaca">
+        <th mat-header-cell *matHeaderCellDef>ID Vozača</th>
+        <td mat-cell *matCellDef="let kazna">{{ kazna.idVozaca }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Akcije</th>
+        <td mat-cell *matCellDef="let kazna">
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              [routerLink]="[kazna.idKazne, 'details']"
+              matTooltip="Detalji"
+              color="accent"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              [routerLink]="[kazna.idKazne, 'edit']"
+              matTooltip="Izmeni"
+              color="primary"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="deleteKazna(kazna.idKazne)"
+              matTooltip="Obriši"
+              color="warn"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-card>
+</div>

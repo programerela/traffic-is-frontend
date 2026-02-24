@@ -1,0 +1,122 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>{{ isEditMode ? 'Izmeni Incident' : 'Novi Incident' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Ažurirajte podatke o incidentu' : 'Evidentiranje novog saobraćajnog incidenta' }}</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <mat-card class="form-card">
+    <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Osnovni Podaci -->
+      <div class="form-section">
+        <h3>Osnovni Podaci</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Datum i Vreme</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="datumVreme">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="incidentForm.get('datumVreme')?.hasError('required')">
+              Datum je obavezan
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Lokacija</mat-label>
+            <input matInput formControlName="lokacija" placeholder="Npr. Bulevar Oslobođenja 45">
+            <mat-icon matPrefix>location_on</mat-icon>
+            <mat-error *ngIf="incidentForm.get('lokacija')?.hasError('required')">
+              Lokacija je obavezna
+            </mat-error>
+            <mat-error *ngIf="incidentForm.get('lokacija')?.hasError('maxlength')">
+              Maksimalno 150 karaktera
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Opis Incidenta</mat-label>
+          <textarea matInput formControlName="opis" rows="4" placeholder="Detaljan opis incidenta..."></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Kategorija -->
+      <div class="form-section">
+        <h3>Kategorija i Status</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Težina Incidenta</mat-label>
+            <mat-select formControlName="tezinaIncidenta">
+              <mat-option *ngFor="let tezina of tezinaOptions" [value]="tezina">
+                {{ tezina }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>warning</mat-icon>
+            <mat-error *ngIf="incidentForm.get('tezinaIncidenta')?.hasError('required')">
+              Težina je obavezna
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="statusIncidenta">
+              <mat-option *ngFor="let status of statusOptions" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>info</mat-icon>
+            <mat-error *ngIf="incidentForm.get('statusIncidenta')?.hasError('required')">
+              Status je obavezan
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Učesnici -->
+      <div class="form-section">
+        <h3>Učesnici (Opciono)</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vozač</mat-label>
+            <mat-select formControlName="idVozaca">
+              <mat-option [value]="null">Nema vozača</mat-option>
+              <mat-option *ngFor="let vozac of vozaci" [value]="vozac.idVozaca">
+                {{ vozac.ime }} {{ vozac.prezime }} ({{ vozac.brojVozacke }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vozilo</mat-label>
+            <mat-select formControlName="idVozila">
+              <mat-option [value]="null">Nema vozila</mat-option>
+              <mat-option *ngFor="let vozilo of vozila" [value]="vozilo.idVozila">
+                {{ vozilo.registracija }} - {{ vozilo.marka }} {{ vozilo.model }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>directions_car</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">
+          Otkaži
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="incidentForm.invalid || loading">
+          <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          {{ isEditMode ? 'Sačuvaj Izmene' : 'Kreiraj Incident' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

@@ -1,0 +1,147 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>{{ isEditMode ? 'Izmeni Zahtev' : 'Novi Zahtev' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Ažurirajte podatke o zahtevu' : 'Kreiranje novog zahteva ili prijave' }}</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <mat-card class="form-card">
+    <form [formGroup]="zahtevForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Tip Zahteva -->
+      <div class="form-section">
+        <h3>Tip Zahteva</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Izaberite tip zahteva</mat-label>
+          <mat-select formControlName="tipZahteva">
+            <mat-option *ngFor="let tip of tipZahtevaOptions" [value]="tip">
+              <div class="tip-option">
+                <mat-icon>{{ tip === 'kvar signalizacije' ? 'warning' : tip === 'zahtev za izvestaj' ? 'description' : 'report' }}</mat-icon>
+                {{ tip }}
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="zahtevForm.get('tipZahteva')?.hasError('required')">
+            Tip zahteva je obavezan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- CONDITIONAL: Report Request Fields -->
+      <div class="form-section" *ngIf="isReportRequest">
+        <h3>Detalji Izveštaja</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tip Izveštaja</mat-label>
+          <mat-select formControlName="reportType" (selectionChange)="onReportTypeChange()">
+            <mat-option *ngFor="let report of reportTypes" [value]="report.value">
+              {{ report.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Period (Opciono)</mat-label>
+          <input matInput formControlName="reportPeriod" placeholder="Npr. Januar 2026, Q4 2025, Godina 2025">
+          <mat-icon matPrefix>date_range</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Dodatne Napomene (Opciono)</mat-label>
+          <textarea matInput formControlName="reportNotes" rows="3" 
+                    placeholder="Specifične metrike, filteri, ili drugi zahtevi za izveštaj..."></textarea>
+        </mat-form-field>
+
+        <div class="info-box">
+          <mat-icon>info</mat-icon>
+          <div>
+            <strong>Napomena:</strong> Analitički izveštaj će biti generisan i prosleđen vam putem email-a u roku od 24h.
+          </div>
+        </div>
+      </div>
+
+      <!-- CONDITIONAL: Signal Defect Fields -->
+      <div class="form-section" *ngIf="isSignalDefect">
+        <h3>Detalji Kvara</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Signalizacija</mat-label>
+          <mat-select formControlName="idSignalizacije">
+            <mat-option [value]="null">Nije specifirana</mat-option>
+            <mat-option *ngFor="let signal of signalizacije" [value]="signal.idSignalizacije">
+              {{ signal.lokacija }} - {{ signal.tipSignalizacije }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>traffic</mat-icon>
+        </mat-form-field>
+
+        <div class="info-box warning">
+          <mat-icon>warning</mat-icon>
+          <div>
+            <strong>Hitno:</strong> Kvarovi na signalizaciji se obrađuju prioritetno.
+          </div>
+        </div>
+      </div>
+
+      <!-- CONDITIONAL: Citizen Report Fields -->
+      <div class="form-section" *ngIf="isCitizenReport">
+        <h3>Detalji Prijave</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Povezan Incident (Opciono)</mat-label>
+          <mat-select formControlName="idIncidenta">
+            <mat-option [value]="null">Nije povezano sa incidentom</mat-option>
+            <mat-option *ngFor="let incident of incidenti" [value]="incident.idIncidenta">
+              #{{ incident.idIncidenta }} - {{ incident.lokacija }} ({{ incident.datumVreme | date:'dd.MM.yyyy' }})
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>link</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Common: Opis -->
+      <div class="form-section">
+        <h3>Opis</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ isReportRequest ? 'Automatski generisan opis' : 'Detaljan opis zahteva' }}</mat-label>
+          <textarea matInput formControlName="opis" rows="5" 
+                    [placeholder]="isReportRequest ? 'Opis će biti automatski kreiran na osnovu izabrane vrste izveštaja' : 'Opišite zahtev ili problem detaljno...'"></textarea>
+          <mat-error *ngIf="zahtevForm.get('opis')?.hasError('required')">
+            Opis je obavezan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Status -->
+      <div class="form-section">
+        <h3>Status</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Status Zahteva</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{ status }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>info</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">
+          Otkaži
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="zahtevForm.invalid || loading">
+          <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          {{ isEditMode ? 'Sačuvaj Izmene' : 'Podnesi Zahtev' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

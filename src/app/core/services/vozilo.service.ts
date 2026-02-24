@@ -3,16 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { VoziloResponseDTO, VoziloRequestDTO } from '../../models/vozilo.model';
+import { MockDataService } from './mock-data.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VoziloService {
   private apiUrl = `${environment.apiUrl}/vozila`;
+  private useMockData = environment.useMockData;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private mockDataService: MockDataService,
+  ) {}
 
   getAllVozila(): Observable<VoziloResponseDTO[]> {
+    if (this.useMockData) {
+      return this.mockDataService.getMockVozila();
+    }
     return this.http.get<VoziloResponseDTO[]>(this.apiUrl);
   }
 

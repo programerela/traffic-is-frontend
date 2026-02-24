@@ -2,27 +2,23 @@
 
 <mat-sidenav-container class="sidenav-container">
   <!-- SIDEBAR -->
-  <mat-sidenav 
-    #sidenav 
-    mode="side" 
-    [opened]="sidenavOpened()"
-    class="sidenav">
-    
+  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened()" class="sidenav">
     <!-- Sidebar Header -->
     <div class="sidenav-header">
-      <mat-icon class="logo-icon">local_police</mat-icon>
+      <img src="assets/logo.png" alt="Logo" class="logo-icon" />
       <h3 *ngIf="sidenavOpened()">Saobraćajna Policija</h3>
     </div>
 
     <!-- Navigation Menu -->
     <mat-nav-list class="nav-list">
       <ng-container *ngFor="let item of menuItems">
-        <a 
+        <a
           *ngIf="canViewItem(item)"
-          mat-list-item 
+          mat-list-item
           [routerLink]="item.route"
           routerLinkActive="active-link"
-          class="nav-item">
+          class="nav-item"
+        >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle *ngIf="sidenavOpened()">{{ item.label }}</span>
         </a>
@@ -55,11 +51,11 @@
       <!-- User Menu -->
       <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
         <div class="user-avatar">{{ userInitials }}</div>
-        <span class="user-name">{{ currentUser?.ime }} {{ currentUser?.prezime }}</span>
+        <!-- <span class="user-name">{{ currentUser?.ime }} {{ currentUser?.prezime }}</span> -->
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
 
-      <mat-menu #userMenu="matMenu">
+      <mat-menu #userMenu="matMenu" panelClass="user-menu-panel">
         <div class="user-menu-header">
           <div class="user-avatar-large">{{ userInitials }}</div>
           <div class="user-info">

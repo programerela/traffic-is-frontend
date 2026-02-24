@@ -1,7 +1,3 @@
-// TEMPLATE ZA SVE PLACEHOLDER KOMPONENTE
-// Koristi ovo kao template i samo promeni naziv komponente
-
-// Primer: VozaciListComponent
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';

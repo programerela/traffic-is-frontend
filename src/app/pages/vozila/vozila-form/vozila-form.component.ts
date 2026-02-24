@@ -1,61 +1,93 @@
-// TEMPLATE ZA SVE PLACEHOLDER KOMPONENTE
-// Koristi ovo kao template i samo promeni naziv komponente
-
-// Primer: VozaciListComponent
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+
+import { VoziloService } from '../../../core/services/vozilo.service';
+import { VoziloRequestDTO } from '../../../models/vozilo.model';
 
 @Component({
   selector: 'app-vozila-form',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
-  template: `
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Vozila</h1>
-        <button mat-raised-button color="primary" routerLink="new">
-          <mat-icon>add</mat-icon>
-          Dodaj Vozilo
-        </button>
-      </div>
-      <mat-card>
-        <mat-card-content>
-          <p>Forma za vozilo će biti ovde...</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
-  styles: [`
-    .page-container { padding: 1rem; }
-    .page-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 1.5rem; 
-    }
-    .page-header h1 { 
-      font-size: 1.75rem; 
-      font-weight: 700; 
-      margin: 0; 
-    }
-  `]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+  ],
+  templateUrl: './vozila-form.component.html',
+  styleUrl: './vozila-form.component.css'
 })
-export class VozilaFormComponent {}
+export class VozilaFormComponent implements OnInit {
+  voziloForm: FormGroup;
+  isEditMode = false;
+  voziloId?: number;
+  loading = false;
 
-// PRIMENI ISTI TEMPLATE ZA:
-// - VozaciFormComponent (promeni template: "Forma za vozača...")
-// - VozaciDetailComponent (promeni template: "Detalji vozača...")
-// - VozilaListComponent
-// - VozilaFormComponent
-// - IncidentiListComponent
-// - IncidentiFormComponent
-// - KazneListComponent
-// - KazneFormComponent
-// - SignalizacijaListComponent
-// - ZahteviListComponent
-// - ObavestenjaListComponent
-// - AnalitikaComponent
+  constructor(
+    private fb: FormBuilder,
+    private voziloService: VoziloService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.voziloForm = this.fb.group({
+      marka: ['', Validators.required],
+      model: ['', Validators.required],
+      registracija: ['', Validators.required],
+      godiste: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode = true;
+      this.voziloId = +id;
+      this.loadVozilo(this.voziloId);
+    }
+  }
+
+  loadVozilo(id: number): void {
+    this.voziloService.getVoziloById(id).subscribe({
+      next: (vozilo) => this.voziloForm.patchValue(vozilo),
+      error: () => {
+        alert('Greška pri učitavanju vozila');
+        this.router.navigate(['/app/vozila']);
+      }
+    });
+  }
+
+  onSubmit(): void {
+    if (this.voziloForm.invalid) return;
+
+    this.loading = true;
+    const data: VoziloRequestDTO = this.voziloForm.value;
+
+    const request = this.isEditMode
+      ? this.voziloService.updateVozilo(this.voziloId!, data)
+      : this.voziloService.createVozilo(data);
+
+    request.subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/app/vozila']);
+      },
+      error: () => {
+        this.loading = false;
+        alert('Greška pri čuvanju vozila');
+      }
+    });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/app/vozila']);
+  }
+}

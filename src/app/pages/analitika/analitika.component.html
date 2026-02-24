@@ -1,0 +1,213 @@
+<!-- src/app/pages/analitika/analitika.component.html -->
+
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Analitika i Izveštaji</h1>
+      <p class="page-subtitle">Detaljni statistički podaci i izveštaji o saobraćajnim događajima</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Analytics Content -->
+  <div *ngIf="!loading()">
+    <mat-tab-group>
+      
+      <!-- Top 10 Tab -->
+      <mat-tab label="Top 10 Statistika">
+        <div class="tab-content">
+          <div class="analytics-grid">
+            
+            <!-- Top 10 Rizičnih Lokacija -->
+            <mat-card class="analytics-card">
+              <mat-card-header>
+                <mat-card-title>
+                  <mat-icon>location_on</mat-icon>
+                  Top 10 Rizičnih Lokacija
+                </mat-card-title>
+                <mat-card-subtitle>Lokacije sa najviše incidenata</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="ranking-list">
+                  <div *ngFor="let lokacija of topLokacije(); let i = index" class="ranking-item">
+                    <div class="rank-badge" [class.top-3]="i < 3">{{ i + 1 }}</div>
+                    <div class="ranking-info">
+                      <span class="ranking-label">{{ lokacija.lokacija }}</span>
+                      <div class="ranking-bar">
+                        <div class="ranking-bar-fill" 
+                             [style.width.%]="(lokacija.brojIncidenata / topLokacije()[0].brojIncidenata) * 100">
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ranking-count">{{ lokacija.brojIncidenata }}</span>
+                  </div>
+                  <div *ngIf="topLokacije().length === 0" class="no-data">
+                    Nema podataka
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Top 10 Vozača sa Kaznama -->
+            <mat-card class="analytics-card">
+              <mat-card-header>
+                <mat-card-title>
+                  <mat-icon>gavel</mat-icon>
+                  Top 10 Vozača sa Kaznama
+                </mat-card-title>
+                <mat-card-subtitle>Vozači sa najviše prekršaja</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="ranking-list">
+                  <div *ngFor="let vozac of topVozaci(); let i = index" class="ranking-item">
+                    <div class="rank-badge" [class.top-3]="i < 3">{{ i + 1 }}</div>
+                    <div class="ranking-info">
+                      <span class="ranking-label">{{ vozac.imeVozaca }} {{ vozac.prezimeVozaca }}</span>
+                      <div class="ranking-stats">
+                        <span>{{ vozac.brojKazni }} kazni</span>
+                        <span class="amount">{{ vozac.ukupanIznos | number:'1.0-0' }} RSD</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="topVozaci().length === 0" class="no-data">
+                    Nema podataka
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Periodični Izveštaji Tab -->
+      <mat-tab label="Periodični Izveštaji">
+        <div class="tab-content">
+          
+          <!-- Period Selection -->
+          <mat-card class="filter-card">
+            <div class="period-filters">
+              <mat-form-field appearance="outline">
+                <mat-label>Godina</mat-label>
+                <mat-select [(value)]="selectedGodina" (selectionChange)="onGodinaChange()">
+                  <mat-option *ngFor="let godina of godine" [value]="godina">
+                    {{ godina }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Mesec</mat-label>
+                <mat-select [(value)]="selectedMesec" (selectionChange)="onMesecChange()">
+                  <mat-option *ngFor="let mesec of meseci" [value]="mesec.value">
+                    {{ mesec.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </mat-card>
+
+          <div class="reports-grid">
+            
+            <!-- Mesečni Izveštaj -->
+            <mat-card class="report-card">
+              <mat-card-header>
+                <mat-card-title>Mesečni Izveštaj</mat-card-title>
+                <button mat-icon-button (click)="exportReport('mesecni')">
+                  <mat-icon>download</mat-icon>
+                </button>
+              </mat-card-header>
+              <mat-card-content *ngIf="mesecniIzvestaj()">
+                <div class="report-stats">
+                  <div class="stat-item">
+                    <mat-icon>warning</mat-icon>
+                    <div>
+                      <h3>{{ mesecniIzvestaj()!.ukupnoIncidenata }}</h3>
+                      <p>Ukupno Incidenata</p>
+                    </div>
+                  </div>
+                  <div class="stat-item">
+                    <mat-icon>gavel</mat-icon>
+                    <div>
+                      <h3>{{ mesecniIzvestaj()!.ukupnoKazni }}</h3>
+                      <p>Ukupno Kazni</p>
+                    </div>
+                  </div>
+                  <div class="stat-item">
+                    <mat-icon>attach_money</mat-icon>
+                    <div>
+                      <h3>{{ mesecniIzvestaj()!.ukupanIznosKazni | number:'1.0-0' }} RSD</h3>
+                      <p>Ukupan Iznos</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="incident-breakdown" *ngIf="mesecniIzvestaj()!.incidentiPoTezini">
+                  <h4>Incidenti po Težini</h4>
+                  <div class="breakdown-list">
+                    <div *ngFor="let item of mesecniIzvestaj()!.incidentiPoTezini | keyvalue" class="breakdown-item">
+                      <span>{{ item.key }}</span>
+                      <span class="breakdown-count">{{ item.value }}</span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Godišnji Izveštaj -->
+            <mat-card class="report-card">
+              <mat-card-header>
+                <mat-card-title>Godišnji Izveštaj</mat-card-title>
+                <button mat-icon-button (click)="exportReport('godisnji')">
+                  <mat-icon>download</mat-icon>
+                </button>
+              </mat-card-header>
+              <mat-card-content *ngIf="godisnjiIzvestaj()">
+                <div class="report-stats">
+                  <div class="stat-item">
+                    <mat-icon>warning</mat-icon>
+                    <div>
+                      <h3>{{ godisnjiIzvestaj()!.ukupnoIncidenata }}</h3>
+                      <p>Ukupno Incidenata</p>
+                    </div>
+                  </div>
+                  <div class="stat-item">
+                    <mat-icon>gavel</mat-icon>
+                    <div>
+                      <h3>{{ godisnjiIzvestaj()!.ukupnoKazni }}</h3>
+                      <p>Ukupno Kazni</p>
+                    </div>
+                  </div>
+                  <div class="stat-item">
+                    <mat-icon>attach_money</mat-icon>
+                    <div>
+                      <h3>{{ godisnjiIzvestaj()!.ukupanIznosKazni | number:'1.0-0' }} RSD</h3>
+                      <p>Ukupan Iznos</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="incident-breakdown" *ngIf="godisnjiIzvestaj()!.incidentiPoTezini">
+                  <h4>Incidenti po Težini</h4>
+                  <div class="breakdown-list">
+                    <div *ngFor="let item of godisnjiIzvestaj()!.incidentiPoTezini | keyvalue" class="breakdown-item">
+                      <span>{{ item.key }}</span>
+                      <span class="breakdown-count">{{ item.value }}</span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</div>

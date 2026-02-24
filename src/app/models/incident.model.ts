@@ -1,5 +1,5 @@
-export type TezinaIncidenta = 'manji' | 'veci' | 'sa povredenima' | 'sa poginulima';
-export type StatusIncidenta = 'evidentiran' | 'obraden' | 'prosleden';
+export type TezinaIncidenta = 'manji' | 'veci' | 'sa povredjenima' | 'sa poginulima';
+export type StatusIncidenta = 'evidentiran' | 'obradjen' | 'prosledjen';
 
 export interface Incident {
   idIncidenta: number;

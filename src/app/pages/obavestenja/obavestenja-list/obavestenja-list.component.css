@@ -1,0 +1,140 @@
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.page-header {
+  margin-bottom: 2rem;
+}
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: #1e293b;
+}
+.page-subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.notifications-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.notification-card {
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  border-left: 4px solid #cbd5e1;
+}
+.notification-card.visok {
+  border-left-color: #ef4444;
+}
+.notification-card.srednji {
+  border-left-color: #f59e0b;
+}
+.notification-card.nizak {
+  border-left-color: #3b82f6;
+}
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.header-left {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.notification-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+.notification-icon.visok {
+  color: #ef4444;
+}
+.notification-icon.srednji {
+  color: #f59e0b;
+}
+.notification-icon.nizak {
+  color: #3b82f6;
+}
+
+.chip-small {
+  font-size: 0.75rem;
+  height: 24px;
+}
+
+.notification-type {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+.notification-time {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.notification-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1e293b;
+  margin: 1rem 0;
+}
+
+.notification-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+.notification-footer mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #94a3b8;
+  text-align: center;
+}
+.no-data-container mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+}
+.no-data-container h3 {
+  margin: 0.5rem 0;
+  color: #64748b;
+}
+.no-data-container p {
+  margin: 0;
+}

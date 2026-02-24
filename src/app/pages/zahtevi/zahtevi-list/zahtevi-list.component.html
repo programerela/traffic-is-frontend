@@ -1,0 +1,102 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Zahtevi i Prijave</h1>
+      <p class="page-subtitle">Upravljanje zahtevima građana i internim zahtevima</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="new">
+      <mat-icon>add</mat-icon>
+      Novi Zahtev
+    </button>
+  </div>
+
+  <mat-card class="filter-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pretraži zahteve</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Tip, opis, status..." />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-card *ngIf="!loading()" class="table-card">
+    <table mat-table [dataSource]="filteredZahtevi()" class="zahtevi-table">
+      <ng-container matColumnDef="idZahteva">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let zahtev">#{{ zahtev.idZahteva }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="datumVreme">
+        <th mat-header-cell *matHeaderCellDef>Datum</th>
+        <td mat-cell *matCellDef="let zahtev">
+          {{ zahtev.datumVreme | date: 'dd.MM.yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipZahteva">
+        <th mat-header-cell *matHeaderCellDef>Tip Zahteva</th>
+        <td mat-cell *matCellDef="let zahtev">
+          <div class="tip-cell">
+            <mat-icon>{{ getTipIcon(zahtev.tipZahteva) }}</mat-icon>
+            {{ zahtev.tipZahteva }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="opis">
+        <th mat-header-cell *matHeaderCellDef>Opis</th>
+        <td mat-cell *matCellDef="let zahtev">
+          <span class="opis-text">{{ zahtev.opis || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let zahtev">
+          <mat-chip [color]="getStatusColor(zahtev.status)">
+            {{ zahtev.status }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Akcije</th>
+        <td mat-cell *matCellDef="let zahtev">
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              [routerLink]="[zahtev.idZahteva, 'edit']"
+              matTooltip="Izmeni"
+              color="primary"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="deleteZahtev(zahtev.idZahteva)"
+              matTooltip="Obriši"
+              color="warn"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data-row" [attr.colspan]="displayedColumns.length">
+          <div class="no-data-container">
+            <mat-icon>info</mat-icon>
+            <p>Nema pronađenih zahteva</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </mat-card>
+</div>

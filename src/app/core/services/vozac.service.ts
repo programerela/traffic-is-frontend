@@ -3,17 +3,25 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Vozac, VozacResponseDTO, VozacRequestDTO } from '../../models/vozac.model';
+import { MockDataService } from './mock-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VozacService {
   private apiUrl = `${environment.apiUrl}/vozaci`;
+  private useMockData = environment.useMockData;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private mockDataService: MockDataService
+  ) {}
 
   // GET /api/vozaci
   getAllVozaci(): Observable<VozacResponseDTO[]> {
+    if (this.useMockData) {
+      return this.mockDataService.getMockVozaci();
+    }
     return this.http.get<VozacResponseDTO[]>(this.apiUrl);
   }
 

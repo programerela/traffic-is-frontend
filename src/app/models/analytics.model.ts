@@ -39,6 +39,8 @@ export interface PeriodIzvestaj {
   incidentiPoTezini: { [key: string]: number };
   ukupnoKazni: number;
   ukupanIznosKazni: number;
+  ukupnoPovređenih: number;
+  ukupnoPoginulih: number;
 }
 
 // Statistika po vrsti

@@ -1,61 +1,94 @@
-// TEMPLATE ZA SVE PLACEHOLDER KOMPONENTE
-// Koristi ovo kao template i samo promeni naziv komponente
+// src/app/pages/vozaci/vozaci-list/vozaci-list.component.ts
 
-// Primer: VozaciListComponent
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+import { KazneService } from '../../../core/services/kazne.service';
+import { KaznaResponseDTO } from '../../../models/kazna.model';
 
 @Component({
   selector: 'app-kazne-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
-  template: `
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Kazne</h1>
-        <button mat-raised-button color="primary" routerLink="new">
-          <mat-icon>add</mat-icon>
-          Dodaj Kaznu
-        </button>
-      </div>
-      <mat-card>
-        <mat-card-content>
-          <p>Tabela kazni će biti ovde...</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
-  styles: [`
-    .page-container { padding: 1rem; }
-    .page-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 1.5rem; 
-    }
-    .page-header h1 { 
-      font-size: 1.75rem; 
-      font-weight: 700; 
-      margin: 0; 
-    }
-  `]
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatChipsModule,
+  ],
+  templateUrl: './kazne-list.component.html',
+  styleUrls: ['./kazne-list.component.css'],
 })
-export class KazneListComponent {}
+export class KazneListComponent implements OnInit {
+  kazne = signal<KaznaResponseDTO[]>([]);
+  filteredKazne = signal<KaznaResponseDTO[]>([]);
+  loading = signal(true);
+  displayedColumns = [
+    'idKazne',
+    'datumIzdavanja',
+    'iznos',
+    'opisPrekrsaja',
+    'statusPlacanja',
+    'vrstaPrekrsaja',
+    'idVozaca',
+    'actions',
+  ];
 
-// PRIMENI ISTI TEMPLATE ZA:
-// - VozaciFormComponent (promeni template: "Forma za vozača...")
-// - VozaciDetailComponent (promeni template: "Detalji vozača...")
-// - VozilaListComponent
-// - VozilaFormComponent
-// - IncidentiListComponent
-// - IncidentiFormComponent
-// - KazneListComponent
-// - KazneFormComponent
-// - SignalizacijaListComponent
-// - ZahteviListComponent
-// - ObavestenjaListComponent
-// - AnalitikaComponent
+  constructor(private kazneService: KazneService) {}
+
+  ngOnInit(): void {
+    this.loadKazne();
+  }
+
+  loadKazne(): void {
+    this.loading.set(true);
+    this.kazneService.getAllKazne().subscribe({
+      next: (data) => {
+        this.kazne.set(data);
+        this.filteredKazne.set(data);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    const filtered = this.kazne().filter(
+      (k) =>
+        k.opisPrekrsaja.toLowerCase().includes(filterValue) ||
+        k.statusPlacanja.toLowerCase().includes(filterValue) ||
+        k.vrstaPrekrsaja.toLowerCase().includes(filterValue) ||
+        (k.imeVozaca && k.imeVozaca.toLowerCase().includes(filterValue)) ||
+        (k.prezimeVozaca && k.prezimeVozaca.toLowerCase().includes(filterValue)),
+    );
+    this.filteredKazne.set(filtered);
+  }
+
+  deleteKazna(id: number): void {
+    if (confirm('Da li ste sigurni?')) {
+      this.kazneService.deleteKazna(id).subscribe({
+        next: () => this.loadKazne(),
+        error: (error) => alert('Greška!'),
+      });
+    }
+  }
+}

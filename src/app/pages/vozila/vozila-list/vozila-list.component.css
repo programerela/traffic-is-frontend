@@ -1,0 +1,102 @@
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: #1e293b;
+}
+
+.page-subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.filter-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.table-card {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 700px;
+}
+
+.data-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #475569;
+}
+
+.vehicle-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vehicle-cell mat-icon {
+  color: #64748b;
+  font-size: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* -------- RESPONSIVE -------- */
+
+@media (max-width: 1024px) {
+  .data-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-field {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .data-table {
+    min-width: 500px;
+  }
+
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+}

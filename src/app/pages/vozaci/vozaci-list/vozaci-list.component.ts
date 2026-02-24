@@ -1,61 +1,82 @@
-// TEMPLATE ZA SVE PLACEHOLDER KOMPONENTE
-// Koristi ovo kao template i samo promeni naziv komponente
-
-// Primer: VozaciListComponent
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+import { VozacService } from '../../../core/services/vozac.service';
+import { VozacResponseDTO } from '../../../models/vozac.model';
 
 @Component({
   selector: 'app-vozaci-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
-  template: `
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Vozači</h1>
-        <button mat-raised-button color="primary" routerLink="new">
-          <mat-icon>add</mat-icon>
-          Dodaj Vozača
-        </button>
-      </div>
-      <mat-card>
-        <mat-card-content>
-          <p>Tabela vozača će biti ovde...</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
-  styles: [`
-    .page-container { padding: 1rem; }
-    .page-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 1.5rem; 
-    }
-    .page-header h1 { 
-      font-size: 1.75rem; 
-      font-weight: 700; 
-      margin: 0; 
-    }
-  `]
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatChipsModule,
+  ],
+  templateUrl: './vozaci-list.component.html',
+  styleUrls: ['./vozaci-list.component.css'],
 })
-export class VozaciListComponent {}
+export class VozaciListComponent implements OnInit {
+  vozaci = signal<VozacResponseDTO[]>([]);
+  filteredVozaci = signal<VozacResponseDTO[]>([]);
+  loading = signal(true);
+  displayedColumns = ['idVozaca', 'ime', 'jmbg', 'brojVozacke', 'telefon', 'statistika', 'actions'];
 
-// PRIMENI ISTI TEMPLATE ZA:
-// - VozaciFormComponent (promeni template: "Forma za vozača...")
-// - VozaciDetailComponent (promeni template: "Detalji vozača...")
-// - VozilaListComponent
-// - VozilaFormComponent
-// - IncidentiListComponent
-// - IncidentiFormComponent
-// - KazneListComponent
-// - KazneFormComponent
-// - SignalizacijaListComponent
-// - ZahteviListComponent
-// - ObavestenjaListComponent
-// - AnalitikaComponent
+  constructor(private vozacService: VozacService) {}
+
+  ngOnInit(): void {
+    this.loadVozaci();
+  }
+
+  loadVozaci(): void {
+    this.loading.set(true);
+    this.vozacService.getAllVozaci().subscribe({
+      next: (data) => {
+        this.vozaci.set(data);
+        this.filteredVozaci.set(data);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    const filtered = this.vozaci().filter(
+      (v) =>
+        v.ime.toLowerCase().includes(filterValue) ||
+        v.prezime.toLowerCase().includes(filterValue) ||
+        v.jmbg.includes(filterValue) ||
+        v.brojVozacke.toLowerCase().includes(filterValue),
+    );
+    this.filteredVozaci.set(filtered);
+  }
+
+  deleteVozac(id: number): void {
+    if (confirm('Da li ste sigurni?')) {
+      this.vozacService.deleteVozac(id).subscribe({
+        next: () => this.loadVozaci(),
+        error: (error) => alert('Greška!'),
+      });
+    }
+  }
+}

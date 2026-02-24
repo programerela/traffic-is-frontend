@@ -1,0 +1,62 @@
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: #1e293b;
+}
+.page-subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.filter-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+.search-field {
+  width: 100%;
+  max-width: 400px;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+.table-card {
+  overflow: hidden;
+}
+.data-table {
+  width: 100%;
+}
+.data-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #475569;
+}
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.name-cell mat-icon {
+  color: #64748b;
+  font-size: 20px;
+}
+.stats-chips {
+  display: flex;
+  gap: 0.5rem;
+}
+.action-buttons {
+  display: flex;
+  gap: 0.25rem;
+}

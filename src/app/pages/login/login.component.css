@@ -15,14 +15,14 @@
 .login-header {
   text-align: center;
   color: white;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .login-header .police-icon {
   font-size: 64px;
   width: 64px;
   height: 64px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .login-header h1 {
@@ -38,6 +38,7 @@
 }
 
 .login-card {
+  background-color: #e1c8fa;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
 }

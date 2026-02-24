@@ -1,0 +1,123 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Saobraćajni Incidenti</h1>
+      <p class="page-subtitle">Pregled svih evidentiranih incidenata</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="new">
+      <mat-icon>add</mat-icon>
+      Novi Incident
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filter-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pretraži incidente</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Lokacija, težina, status...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Table -->
+  <mat-card *ngIf="!loading()" class="table-card">
+    <table mat-table [dataSource]="filteredIncidenti()" class="incidents-table">
+
+      <!-- ID Column -->
+      <ng-container matColumnDef="idIncidenta">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let incident">#{{ incident.idIncidenta }}</td>
+      </ng-container>
+
+      <!-- Datum/Vreme Column -->
+      <ng-container matColumnDef="datumVreme">
+        <th mat-header-cell *matHeaderCellDef>Datum i Vreme</th>
+        <td mat-cell *matCellDef="let incident">
+          {{ incident.datumVreme | date:'dd.MM.yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <!-- Lokacija Column -->
+      <ng-container matColumnDef="lokacija">
+        <th mat-header-cell *matHeaderCellDef>Lokacija</th>
+        <td mat-cell *matCellDef="let incident">
+          <div class="location-cell">
+            <mat-icon>location_on</mat-icon>
+            {{ incident.lokacija }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Težina Column -->
+      <ng-container matColumnDef="tezinaIncidenta">
+        <th mat-header-cell *matHeaderCellDef>Težina</th>
+        <td mat-cell *matCellDef="let incident">
+          <mat-chip [color]="getTezinaColor(incident.tezinaIncidenta)">
+            {{ incident.tezinaIncidenta }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="statusIncidenta">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let incident">
+          <mat-chip [color]="getStatusColor(incident.statusIncidenta)">
+            {{ incident.statusIncidenta }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Vozač Column -->
+      <ng-container matColumnDef="vozac">
+        <th mat-header-cell *matHeaderCellDef>Vozač</th>
+        <td mat-cell *matCellDef="let incident">
+          <span *ngIf="incident.imeVozaca">
+            {{ incident.imeVozaca }} {{ incident.prezimeVozaca }}
+          </span>
+          <span *ngIf="!incident.imeVozaca" class="no-data">-</span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Akcije</th>
+        <td mat-cell *matCellDef="let incident">
+          <div class="action-buttons">
+            <button mat-icon-button 
+                    [routerLink]="[incident.idIncidenta, 'edit']"
+                    matTooltip="Izmeni"
+                    color="primary">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button 
+                    (click)="deleteIncident(incident.idIncidenta)"
+                    matTooltip="Obriši"
+                    color="warn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data-row" [attr.colspan]="displayedColumns.length">
+          <div class="no-data-container">
+            <mat-icon>info</mat-icon>
+            <p>Nema pronađenih incidenata</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </mat-card>
+</div>

@@ -1,61 +1,83 @@
-// TEMPLATE ZA SVE PLACEHOLDER KOMPONENTE
-// Koristi ovo kao template i samo promeni naziv komponente
-
-// Primer: VozaciListComponent
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+import { VoziloService } from '../../../core/services/vozilo.service';
+import { VoziloResponseDTO } from '../../../models/vozilo.model';
 
 @Component({
   selector: 'app-vozila-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
-  template: `
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Vozila</h1>
-        <button mat-raised-button color="primary" routerLink="new">
-          <mat-icon>add</mat-icon>
-          Dodaj Vozilo
-        </button>
-      </div>
-      <mat-card>
-        <mat-card-content>
-          <p>Tabela vozila će biti ovde...</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
-  styles: [`
-    .page-container { padding: 1rem; }
-    .page-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 1.5rem; 
-    }
-    .page-header h1 { 
-      font-size: 1.75rem; 
-      font-weight: 700; 
-      margin: 0; 
-    }
-  `]
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatChipsModule,
+  ],
+  templateUrl: './vozila-list.component.html',
+  styleUrls: ['./vozila-list.component.css'],
 })
-export class VozilaListComponent {}
+export class VozilaListComponent implements OnInit {
+  vozila = signal<VoziloResponseDTO[]>([]);
+  filteredVozila = signal<VoziloResponseDTO[]>([]);
+  loading = signal(true);
 
-// PRIMENI ISTI TEMPLATE ZA:
-// - VozaciFormComponent (promeni template: "Forma za vozača...")
-// - VozaciDetailComponent (promeni template: "Detalji vozača...")
-// - VozilaListComponent
-// - VozilaFormComponent
-// - IncidentiListComponent
-// - IncidentiFormComponent
-// - KazneListComponent
-// - KazneFormComponent
-// - SignalizacijaListComponent
-// - ZahteviListComponent
-// - ObavestenjaListComponent
-// - AnalitikaComponent
+  displayedColumns = ['idVozila', 'vozilo', 'registracija', 'godiste', 'actions'];
+
+  constructor(private voziloService: VoziloService) {}
+
+  ngOnInit(): void {
+    this.loadVozila();
+  }
+
+  loadVozila(): void {
+    this.loading.set(true);
+    this.voziloService.getAllVozila().subscribe({
+      next: (data) => {
+        this.vozila.set(data);
+        this.filteredVozila.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  applyFilter(event: Event): void {
+    const value = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredVozila.set(
+      this.vozila().filter(
+        (v) =>
+          v.marka.toLowerCase().includes(value) ||
+          v.model.toLowerCase().includes(value) ||
+          v.registracija.toLowerCase().includes(value),
+      ),
+    );
+  }
+
+  deleteVozilo(id: number): void {
+    if (confirm('Da li ste sigurni da želite da obrišete vozilo?')) {
+      this.voziloService.deleteVozilo(id).subscribe({
+        next: () => this.loadVozila(),
+        error: () => alert('Greška prilikom brisanja'),
+      });
+    }
+  }
+}
