@@ -1,5 +1,3 @@
-// src/app/pages/obavestenja/obavestenja-list/obavestenja-list.component.ts
-
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -9,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 import { ObavestenjeService } from '../../../core/services/notification.service';
 import { ObavestenjeResponseDTO } from '../../../models/other.model';
 
@@ -16,15 +15,22 @@ import { ObavestenjeResponseDTO } from '../../../models/other.model';
   selector: 'app-obavestenja-list',
   standalone: true,
   imports: [
-    CommonModule, MatCardModule, MatButtonModule, MatIconModule,
-    MatChipsModule, MatProgressSpinnerModule, MatTooltipModule
+    CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule,
+    MatChipsModule, MatProgressSpinnerModule, MatTooltipModule, MatBadgeModule
   ],
-  templateUrl: `./obavestenja-list.component.html`,
+  templateUrl: './obavestenja-list.component.html',
   styleUrls: ['./obavestenja-list.component.css']
 })
 export class ObavestenjaListComponent implements OnInit {
   obavestenja = signal<ObavestenjeResponseDTO[]>([]);
+  filteredObavestenja = signal<ObavestenjeResponseDTO[]>([]);
   loading = signal(true);
+  selectedFilter = 'all';
+
+  onFilterChange(event: any) {
+  this.selectedFilter = event.value;
+  this.applyFilterByPriority();
+}
 
   constructor(private obavestenjeService: ObavestenjeService) {}
 
@@ -37,6 +43,7 @@ export class ObavestenjaListComponent implements OnInit {
     this.obavestenjeService.getAllObavestenja().subscribe({
       next: (data) => {
         this.obavestenja.set(data);
+        this.filteredObavestenja.set(data);
         this.loading.set(false);
       },
       error: (error) => {
@@ -44,6 +51,15 @@ export class ObavestenjaListComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  applyFilterByPriority(): void {
+    if (this.selectedFilter === 'all') {
+      this.filteredObavestenja.set(this.obavestenja());
+    } else {
+      const filtered = this.obavestenja().filter(o => o.prioritet === this.selectedFilter);
+      this.filteredObavestenja.set(filtered);
+    }
   }
 
   deleteObavestenje(id: number): void {
@@ -55,21 +71,12 @@ export class ObavestenjaListComponent implements OnInit {
     }
   }
 
-  getPrioritetColor(prioritet: string): string {
-    const colors: {[key: string]: string} = {
-      'visok': 'warn',
-      'srednji': 'accent',
-      'nizak': 'primary'
-    };
-    return colors[prioritet] || 'primary';
-  }
-
-  getVrstaIcon(vrsta: string): string {
+  getPrioritetIcon(prioritet: string): string {
     const icons: {[key: string]: string} = {
-      'hitno': 'emergency',
-      'saobracajno upozorenje': 'warning',
-      'obavestenje': 'info'
+      'visok': 'priority_high',
+      'srednji': 'error_outline',
+      'nizak': 'info'
     };
-    return icons[vrsta] || 'notifications';
+    return icons[prioritet] || 'notifications';
   }
 }

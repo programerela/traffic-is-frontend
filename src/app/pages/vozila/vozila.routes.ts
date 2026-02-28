@@ -10,6 +10,10 @@ export const VOZILA_ROUTES: Routes = [
     loadComponent: () => import('./vozila-form/vozila-form.component').then(m => m.VozilaFormComponent)
   },
   {
+    path: ':id',
+    loadComponent: () => import('./vozila-detail/vozila-detail.component').then(m => m.VozilaDetailComponent)
+  },
+  {
     path: ':id/edit',
     loadComponent: () => import('./vozila-form/vozila-form.component').then(m => m.VozilaFormComponent)
   }

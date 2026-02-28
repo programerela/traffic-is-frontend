@@ -1,32 +1,39 @@
 <div class="page-container">
   <div class="page-header">
     <div>
-      <h1>Obaveštenja za Javnost</h1>
-      <p class="page-subtitle">Aktivna obaveštenja o saobraćajnim događajima</p>
+      <h1>Interna Obaveštenja</h1>
+      <p class="page-subtitle">Sistematska obaveštenja za policijske službenike</p>
     </div>
   </div>
 
   <div *ngIf="loading()" class="loading-container">
     <mat-spinner></mat-spinner>
+    <p>Učitavanje obaveštenja...</p>
+  </div>
+
+  <!-- Filter Chips -->
+  <div *ngIf="!loading()" class="filter-chips">
+    <mat-chip-listbox [value]="selectedFilter" (change)="onFilterChange($event)">
+      <mat-chip-option value="all">Sva</mat-chip-option>
+      <mat-chip-option value="visok">Visok Prioritet</mat-chip-option>
+      <mat-chip-option value="srednji">Srednji Prioritet</mat-chip-option>
+      <mat-chip-option value="nizak">Nizak Prioritet</mat-chip-option>
+    </mat-chip-listbox>
   </div>
 
   <div *ngIf="!loading()" class="notifications-grid">
     <mat-card
-      *ngFor="let obavestenje of obavestenja()"
-      [class]="'notification-card ' + obavestenje.prioritet"
+      *ngFor="let obavestenje of filteredObavestenja()"
+      [class]="'notification-card priority-' + obavestenje.prioritet"
     >
       <mat-card-header>
         <div class="notification-header">
           <div class="header-left">
-            <mat-icon [class]="'notification-icon ' + obavestenje.prioritet">
-              {{ getVrstaIcon(obavestenje.vrsta) }}
-            </mat-icon>
-            <div>
-              <mat-chip [color]="getPrioritetColor(obavestenje.prioritet)" class="chip-small">
-                {{ obavestenje.prioritet }}
-              </mat-chip>
-              <p class="notification-type">{{ obavestenje.vrsta }}</p>
+            <div class="priority-badge" [class]="'priority-' + obavestenje.prioritet">
+              <mat-icon>{{ getPrioritetIcon(obavestenje.prioritet) }}</mat-icon>
+              <span>{{ obavestenje.prioritet }} prioritet</span>
             </div>
+            <span class="notification-type">{{ obavestenje.vrsta }}</span>
           </div>
           <span class="notification-time">
             {{ obavestenje.datumVreme | date: 'dd.MM.yyyy HH:mm' }}
@@ -37,24 +44,35 @@
       <mat-card-content>
         <p class="notification-text">{{ obavestenje.tekst }}</p>
 
-        <div class="notification-footer" *ngIf="obavestenje.idIncidenta">
+        <div class="notification-meta" *ngIf="obavestenje.idIncidenta">
           <mat-icon>link</mat-icon>
-          <span>Povezano sa incidentom #{{ obavestenje.idIncidenta }}</span>
+          <span>Povezano: Incident #{{ obavestenje.idIncidenta }}</span>
+          <a mat-button [routerLink]="['/app/incidenti', obavestenje.idIncidenta]"> Otvori </a>
         </div>
       </mat-card-content>
 
       <mat-card-actions align="end">
-        <button mat-button color="warn" (click)="deleteObavestenje(obavestenje.idObavestenja)">
+        <button mat-icon-button matTooltip="Označi kao pročitano" color="primary">
+          <mat-icon>done</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Ukloni"
+          (click)="deleteObavestenje(obavestenje.idObavestenja)"
+          color="warn"
+        >
           <mat-icon>delete</mat-icon>
-          Ukloni
         </button>
       </mat-card-actions>
     </mat-card>
 
-    <div *ngIf="obavestenja().length === 0" class="no-data-container">
+    <div *ngIf="filteredObavestenja().length === 0" class="no-data-container">
       <mat-icon>notifications_off</mat-icon>
-      <h3>Nema aktivnih obaveštenja</h3>
-      <p>Trenutno nema obaveštenja za prikaz</p>
+      <h3>Nema obaveštenja</h3>
+      <p>
+        Trenutno nema
+        {{ selectedFilter === 'all' ? 'aktivnih' : selectedFilter + ' prioritet' }} obaveštenja
+      </p>
     </div>
   </div>
 </div>

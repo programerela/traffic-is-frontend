@@ -20,6 +20,7 @@
 
   <div *ngIf="loading()" class="loading-container">
     <mat-spinner></mat-spinner>
+    <p>Učitavanje liste vozača...</p>
   </div>
 
   <mat-card *ngIf="!loading()" class="table-card">
@@ -58,9 +59,9 @@
         <th mat-header-cell *matHeaderCellDef>Statistika</th>
         <td mat-cell *matCellDef="let vozac">
           <div class="stats-chips">
-            <mat-chip color="primary">{{ vozac.brojVozila || 0 }} vozila</mat-chip>
-            <mat-chip [color]="vozac.brojKazni > 0 ? 'warn' : 'accent'">
-              {{ vozac.brojKazni || 0 }} kazni
+            <mat-chip color="primary">Vozila: {{ vozac.brojVozila || 0 }}</mat-chip>
+            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'">
+              Kazne: {{ vozac.brojKazni || 0 }}
             </mat-chip>
           </div>
         </td>
@@ -101,5 +102,66 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let vozac of filteredVozaci()" class="mobile-card">
+        <div class="mobile-card-header">
+          <span class="mobile-card-id">#{{ vozac.idVozaca }}</span>
+          <div class="mobile-card-chips">
+            <mat-chip color="primary">Vozila: {{ vozac.brojVozila || 0 }}</mat-chip>
+            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'"> 
+             Kazne: {{ vozac.brojKazni || 0 }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>person</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Ime i Prezime</span>
+              <span class="mobile-info-value">{{ vozac.ime }} {{ vozac.prezime }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>badge</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">JMBG</span>
+              <span class="mobile-info-value">{{ vozac.jmbg }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>credit_card</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Broj Vozačke</span>
+              <span class="mobile-info-value">{{ vozac.brojVozacke }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row" *ngIf="vozac.telefon">
+            <mat-icon>phone</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Telefon</span>
+              <span class="mobile-info-value">{{ vozac.telefon }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-footer">
+          <button mat-icon-button [routerLink]="[vozac.idVozaca]" color="accent">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button [routerLink]="[vozac.idVozaca, 'edit']" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteVozac(vozac.idVozaca)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
   </mat-card>
 </div>

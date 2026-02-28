@@ -12,6 +12,12 @@
   max-width: 450px;
 }
 
+img.logo{
+  width: 90px;
+  height: 90px;
+  margin-bottom: 0.5rem;
+}
+
 .login-header {
   text-align: center;
   color: white;

@@ -20,6 +20,7 @@
 
   <div *ngIf="loading()" class="loading-container">
     <mat-spinner></mat-spinner>
+    <p>Učitavanje liste kazni...</p>
   </div>
 
   <mat-card *ngIf="!loading()" class="table-card">
@@ -59,7 +60,7 @@
           <div class="action-buttons">
             <button
               mat-icon-button
-              [routerLink]="[kazna.idKazne, 'details']"
+              [routerLink]="[kazna.idKazne]"
               matTooltip="Detalji"
               color="accent"
             >
@@ -88,5 +89,76 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let kazna of filteredKazne()" class="mobile-card">
+        <!-- Header -->
+        <div class="mobile-card-header">
+          <span class="mobile-card-id">#{{ kazna.idKazne }}</span>
+          <div class="mobile-card-chips">
+            <mat-chip color="primary">{{
+              kazna.datumIzdavanja | date: 'dd.MM.yyyy HH:mm'
+            }}</mat-chip>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>monetization_on</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Iznos</span>
+              <span class="mobile-info-value">{{ kazna.iznos | number: '1.2-2' }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>description</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Opis</span>
+              <span class="mobile-info-value">{{ kazna.opisPrekrsaja }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>check_circle</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Status</span>
+              <span class="mobile-info-value">{{ kazna.statusPlacanja }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>person</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Vozač</span>
+              <span class="mobile-info-value">{{ kazna.idVozaca }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="mobile-card-footer">
+          <button
+            mat-icon-button
+            [routerLink]="[kazna.idKazne]"
+            matTooltip="Detalji"
+            color="accent"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button [routerLink]="[kazna.idKazne, 'edit']" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteKazna(kazna.idKazne)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- No Data -->
+      <div *ngIf="filteredKazne().length === 0" class="no-data-container">
+        <mat-icon>info</mat-icon>
+        <p>Nema podataka</p>
+      </div>
+    </div>
   </mat-card>
 </div>

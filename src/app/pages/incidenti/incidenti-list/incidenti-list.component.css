@@ -1,3 +1,5 @@
+/* src/app/pages/incidenti/incidenti-list/incidenti-list.component.css */
+
 .page-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -106,6 +108,11 @@
   margin-bottom: 1rem;
 }
 
+/* Mobile Card View - Hidden by Default */
+.mobile-cards {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .page-header {
@@ -114,11 +121,120 @@
     gap: 1rem;
   }
 
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
   .page-header button {
     width: 100%;
+    justify-content: center;
   }
 
   .search-field {
     max-width: 100%;
+  }
+
+  /* Hide table on mobile */
+  .incidents-table {
+    display: none;
+  }
+
+  /* Show card layout on mobile */
+  .mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .mobile-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #3b82f6;
+    transition: box-shadow 0.2s;
+  }
+
+  .mobile-card:active {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .mobile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .mobile-card-id {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #3b82f6;
+  }
+
+  .mobile-card-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .mobile-card-body {
+    margin-bottom: 1rem;
+  }
+
+  .mobile-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .mobile-info-row mat-icon {
+    color: #64748b;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+  }
+
+  .mobile-info-content {
+    flex: 1;
+  }
+
+  .mobile-info-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-info-value {
+    font-size: 0.9375rem;
+    color: #1e293b;
+    font-weight: 500;
+  }
+
+  .mobile-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.5rem;
+  }
+
+  .filter-card {
+    padding: 0.75rem;
+  }
+
+  .mobile-cards {
+    padding: 0;
   }
 }

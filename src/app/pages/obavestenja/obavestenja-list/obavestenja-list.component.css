@@ -3,6 +3,9 @@
   margin: 0 auto;
 }
 .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
 }
 .page-header h1 {
@@ -22,6 +25,10 @@
   padding: 4rem 0;
 }
 
+.filter-chips {
+  margin-bottom: 2rem;
+}
+
 .notifications-grid {
   display: grid;
   gap: 1.5rem;
@@ -33,13 +40,13 @@
     box-shadow 0.2s;
   border-left: 4px solid #cbd5e1;
 }
-.notification-card.visok {
+.notification-card.priority-visok {
   border-left-color: #ef4444;
 }
-.notification-card.srednji {
+.notification-card.priority-srednji {
   border-left-color: #f59e0b;
 }
-.notification-card.nizak {
+.notification-card.priority-nizak {
   border-left-color: #3b82f6;
 }
 .notification-card:hover {
@@ -57,35 +64,42 @@
 
 .header-left {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.priority-badge {
+  display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
 }
-
-.notification-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
+.priority-badge.priority-visok {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
-.notification-icon.visok {
-  color: #ef4444;
+.priority-badge.priority-srednji {
+  background-color: #fef3c7;
+  color: #92400e;
 }
-.notification-icon.srednji {
-  color: #f59e0b;
+.priority-badge.priority-nizak {
+  background-color: #dbeafe;
+  color: #1e40af;
 }
-.notification-icon.nizak {
-  color: #3b82f6;
-}
-
-.chip-small {
-  font-size: 0.75rem;
-  height: 24px;
+.priority-badge mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .notification-type {
-  margin: 0.5rem 0 0 0;
   font-size: 0.875rem;
   color: #64748b;
   text-transform: capitalize;
+  padding-left: 0.25rem;
 }
 
 .notification-time {
@@ -100,7 +114,7 @@
   margin: 1rem 0;
 }
 
-.notification-footer {
+.notification-meta {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -110,7 +124,7 @@
   font-size: 0.875rem;
   color: #64748b;
 }
-.notification-footer mat-icon {
+.notification-meta mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
@@ -137,4 +151,22 @@
 }
 .no-data-container p {
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .page-header button {
+    width: 100%;
+  }
+  .notification-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .notification-time {
+    align-self: flex-start;
+  }
 }

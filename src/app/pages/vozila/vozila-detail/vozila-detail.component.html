@@ -1,0 +1,190 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Detalji Vozila</h1>
+      <p class="page-subtitle">Pregled i upravljanje podacima o vozilu</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button routerLink="/app/vozila">
+        <mat-icon>arrow_back</mat-icon>
+        Nazad
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje podataka o vozilu...</p>
+  </div>
+
+  <!-- Vozilo Details -->
+  <div *ngIf="!loading() && vozilo()" class="details-grid">
+    
+    <!-- Main Info Card -->
+    <mat-card class="main-card">
+      <mat-card-header>
+        <div class="card-header-content">
+          <mat-icon class="header-icon">directions_car</mat-icon>
+          <div>
+            <mat-card-title>{{ vozilo()!.marka }} {{ vozilo()!.model }}</mat-card-title>
+            <mat-card-subtitle>{{ vozilo()!.registracija }}</mat-card-subtitle>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <mat-icon>tag</mat-icon>
+            <div>
+              <span class="info-label">Registracija</span>
+              <span class="info-value">{{ vozilo()!.registracija }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>bookmark</mat-icon>
+            <div>
+              <span class="info-label">Marka</span>
+              <span class="info-value">{{ vozilo()!.marka }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>model_training</mat-icon>
+            <div>
+              <span class="info-label">Model</span>
+              <span class="info-value">{{ vozilo()!.model }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="info-label">Godište</span>
+              <span class="info-value">{{ vozilo()!.godiste }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-actions>
+        <button mat-button color="primary" [routerLink]="['/app/vozila', voziloId, 'edit']">
+          <mat-icon>edit</mat-icon>
+          Izmeni Vozilo
+        </button>
+        <button mat-button color="warn" (click)="deleteVozilo()">
+          <mat-icon>delete</mat-icon>
+          Obriši
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Owner Card -->
+    <mat-card class="owner-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          Vlasnik Vozila
+        </mat-card-title>
+        <button mat-icon-button *ngIf="!editingOwner()" (click)="toggleOwnerEdit()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Display Mode -->
+        <div *ngIf="!editingOwner()" class="owner-display">
+          <div *ngIf="vozilo()!.idVozaca" class="owner-info">
+            <div class="owner-avatar">
+              {{ vozilo()!.imeVozaca?.charAt(0) }}{{ vozilo()!.prezimeVozaca?.charAt(0) }}
+            </div>
+            <div class="owner-details">
+              <h3>{{ vozilo()!.imeVozaca }} {{ vozilo()!.prezimeVozaca }}</h3>
+              <p>ID Vozača: #{{ vozilo()!.idVozaca }}</p>
+              <button mat-button color="primary" [routerLink]="['/app/vozaci', vozilo()!.idVozaca]">
+                <mat-icon>visibility</mat-icon>
+                Vidi Profil Vozača
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!vozilo()!.idVozaca" class="no-owner">
+            <mat-icon>person_off</mat-icon>
+            <p>Vozilo nema dodeljenog vlasnika</p>
+            <button mat-raised-button color="primary" (click)="toggleOwnerEdit()">
+              <mat-icon>add</mat-icon>
+              Dodeli Vlasnika
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div *ngIf="editingOwner()" class="owner-edit">
+          <form [formGroup]="ownerForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Izaberi Vlasnika</mat-label>
+              <mat-select formControlName="idVozaca">
+                <mat-option [value]="null">Bez vlasnika</mat-option>
+                <mat-option *ngFor="let vozac of vozaci()" [value]="vozac.idVozaca">
+                  {{ vozac.ime }} {{ vozac.prezime }} ({{ vozac.brojVozacke }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div class="edit-actions">
+              <button mat-button type="button" (click)="cancelOwnerEdit()">Otkaži</button>
+              <button mat-raised-button color="primary" type="button" (click)="saveOwner()">
+                <mat-icon>save</mat-icon>
+                Sačuvaj
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Statistics Card -->
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>analytics</mat-icon>
+          Statistika
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="stats-list">
+          <div class="stat-item">
+            <mat-icon>warning</mat-icon>
+            <div>
+              <span class="stat-value">0</span>
+              <span class="stat-label">Incidenti</span>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <mat-icon>gavel</mat-icon>
+            <div>
+              <span class="stat-value">0</span>
+              <span class="stat-label">Kazne</span>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <mat-icon>history</mat-icon>
+            <div>
+              <span class="stat-value">{{ 2026 - vozilo()!.godiste }}</span>
+              <span class="stat-label">Godina Starosti</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

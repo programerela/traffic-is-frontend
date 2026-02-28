@@ -21,10 +21,10 @@ import { VoziloRequestDTO } from '../../../models/vozilo.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './vozila-form.component.html',
-  styleUrl: './vozila-form.component.css'
+  styleUrl: './vozila-form.component.css',
 })
 export class VozilaFormComponent implements OnInit {
   voziloForm: FormGroup;
@@ -36,17 +36,25 @@ export class VozilaFormComponent implements OnInit {
     private fb: FormBuilder,
     private voziloService: VoziloService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.voziloForm = this.fb.group({
       marka: ['', Validators.required],
       model: ['', Validators.required],
       registracija: ['', Validators.required],
-      godiste: ['', Validators.required]
+      godiste: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
+    // Check for vozacId in query params
+    this.route.queryParams.subscribe((params) => {
+      if (params['vozacId']) {
+        this.voziloForm.patchValue({
+          idVozaca: +params['vozacId'],
+        });
+      }
+    });
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -61,7 +69,7 @@ export class VozilaFormComponent implements OnInit {
       error: () => {
         alert('Greška pri učitavanju vozila');
         this.router.navigate(['/app/vozila']);
-      }
+      },
     });
   }
 
@@ -83,7 +91,7 @@ export class VozilaFormComponent implements OnInit {
       error: () => {
         this.loading = false;
         alert('Greška pri čuvanju vozila');
-      }
+      },
     });
   }
 

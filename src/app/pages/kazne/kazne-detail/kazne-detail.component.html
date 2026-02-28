@@ -1,0 +1,190 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Detalji Kazne</h1>
+      <p class="page-subtitle">Pregled prekršajnog naloga</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button routerLink="/app/kazne">
+        <mat-icon>arrow_back</mat-icon>
+        Nazad
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Kazna Details -->
+  <div *ngIf="!loading() && kazna()" class="details-grid">
+    
+    <!-- Main Info Card -->
+    <mat-card class="main-card">
+      <mat-card-header>
+        <div class="card-header-content">
+          <div class="header-icon-wrapper">
+            <mat-icon class="header-icon" [class]="'status-' + kazna()!.statusPlacanja">
+              {{ getStatusIcon(kazna()!.statusPlacanja) }}
+            </mat-icon>
+          </div>
+          <div class="header-text">
+            <mat-card-title>Kazna #{{ kazna()!.idKazne }}</mat-card-title>
+            <mat-card-subtitle>{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</mat-card-subtitle>
+          </div>
+          <div class="amount-display">
+            <span class="amount-label">Iznos</span>
+            <span class="amount-value">{{ kazna()!.iznos | number:'1.0-0' }} RSD</span>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-content>
+        
+        <!-- Status Section -->
+        <div class="status-section">
+          <div class="status-badge" [class]="'status-' + kazna()!.statusPlacanja">
+            <mat-icon>{{ getStatusIcon(kazna()!.statusPlacanja) }}</mat-icon>
+            <div>
+              <h3>Status Plaćanja</h3>
+              <p>{{ kazna()!.statusPlacanja }}</p>
+            </div>
+          </div>
+
+          <button mat-raised-button 
+                  color="primary" 
+                  *ngIf="kazna()!.statusPlacanja === 'nije placena'"
+                  (click)="markAsPaid()">
+            <mat-icon>check</mat-icon>
+            Označi kao Plaćeno
+          </button>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Prekršaj Info -->
+        <div class="info-section">
+          <h3>Informacije o Prekršaju</h3>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <mat-icon>warning</mat-icon>
+              <div>
+                <span class="info-label">Vrsta Prekršaja</span>
+                <span class="info-value">{{ kazna()!.vrstaPrekrsaja }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>calendar_today</mat-icon>
+              <div>
+                <span class="info-label">Datum Izdavanja</span>
+                <span class="info-value">{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="description-box">
+            <h4>Opis Prekršaja</h4>
+            <p>{{ kazna()!.opisPrekrsaja }}</p>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Vozač Info -->
+        <div class="info-section">
+          <h3>
+            <mat-icon>person</mat-icon>
+            Prekršilac
+          </h3>
+          
+          <div class="participant-card">
+            <div class="participant-avatar">
+              {{ kazna()!.imeVozaca?.charAt(0) }}{{ kazna()!.prezimeVozaca?.charAt(0) }}
+            </div>
+            <div class="participant-info">
+              <h4>{{ kazna()!.imeVozaca }} {{ kazna()!.prezimeVozaca }}</h4>
+              <p>ID Vozača: #{{ kazna()!.idVozaca }}</p>
+            </div>
+            <button mat-raised-button color="primary" [routerLink]="['/app/vozaci', kazna()!.idVozaca]">
+              <mat-icon>visibility</mat-icon>
+              Vidi Profil
+            </button>
+          </div>
+        </div>
+
+        <!-- Incident Link -->
+        <div class="info-section" *ngIf="kazna()!.idIncidenta">
+          <mat-divider></mat-divider>
+          <h3>
+            <mat-icon>link</mat-icon>
+            Povezan Incident
+          </h3>
+          <div class="link-card">
+            <mat-icon>warning</mat-icon>
+            <div class="link-info">
+              <h4>Incident #{{ kazna()!.idIncidenta }}</h4>
+              <p>Kazna je povezana sa ovim incidentom</p>
+            </div>
+            <button mat-raised-button [routerLink]="['/app/incidenti', kazna()!.idIncidenta]">
+              <mat-icon>open_in_new</mat-icon>
+              Otvori
+            </button>
+          </div>
+        </div>
+
+      </mat-card-content>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-actions>
+        <button mat-button color="primary" [routerLink]="['/app/kazne', kaznaId, 'edit']">
+          <mat-icon>edit</mat-icon>
+          Izmeni Kaznu
+        </button>
+        <button mat-button color="warn" (click)="deleteKazna()">
+          <mat-icon>delete</mat-icon>
+          Obriši
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Payment Timeline Card -->
+    <mat-card class="timeline-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>history</mat-icon>
+          Status Plaćanja
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="timeline">
+          <div class="timeline-item" [class.active]="true">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>Kazna Izdata</h4>
+              <p>{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item" [class.active]="kazna()!.statusPlacanja !== 'nije placena'">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>{{ kazna()!.statusPlacanja === 'placena' ? 'Plaćena' : 'U Procesu' }}</h4>
+              <p *ngIf="kazna()!.statusPlacanja === 'placena'">Kazna je podmirena</p>
+              <p *ngIf="kazna()!.statusPlacanja === 'u postupku'">Čeka se plaćanje</p>
+              <p *ngIf="kazna()!.statusPlacanja === 'nije placena'" class="pending">Neplaćena</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

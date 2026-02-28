@@ -1,0 +1,195 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Detalji Incidenta</h1>
+      <p class="page-subtitle">Pregled saobraćajnog incidenta</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button routerLink="/app/incidenti">
+        <mat-icon>arrow_back</mat-icon>
+        Nazad
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Incident Details -->
+  <div *ngIf="!loading() && incident()" class="details-container">
+    
+    <!-- Main Info Card -->
+    <mat-card class="main-card">
+      <mat-card-header>
+        <div class="card-header-content">
+          <div class="header-icon-wrapper">
+            <mat-icon class="header-icon" [class]="'severity-' + incident()!.tezinaIncidenta">
+              {{ getTezinaIcon(incident()!.tezinaIncidenta) }}
+            </mat-icon>
+          </div>
+          <div class="header-text">
+            <mat-card-title>Incident #{{ incident()!.idIncidenta }}</mat-card-title>
+            <mat-card-subtitle>{{ incident()!.datumVreme | date:'dd.MM.yyyy HH:mm' }}</mat-card-subtitle>
+          </div>
+          <div class="header-chips">
+            <mat-chip [color]="getTezinaColor(incident()!.tezinaIncidenta)">
+              {{ incident()!.tezinaIncidenta }}
+            </mat-chip>
+            <mat-chip [color]="getStatusColor(incident()!.statusIncidenta)">
+              {{ incident()!.statusIncidenta }}
+            </mat-chip>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-content>
+        <mat-tab-group>
+          
+          <!-- Osnovni Podaci Tab -->
+          <mat-tab label="Osnovni Podaci">
+            <div class="tab-content">
+              <div class="info-grid">
+                <div class="info-item">
+                  <mat-icon>schedule</mat-icon>
+                  <div>
+                    <span class="info-label">Datum i Vreme</span>
+                    <span class="info-value">{{ incident()!.datumVreme | date:'dd.MM.yyyy HH:mm' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>location_on</mat-icon>
+                  <div>
+                    <span class="info-label">Lokacija</span>
+                    <span class="info-value">{{ incident()!.lokacija }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>warning</mat-icon>
+                  <div>
+                    <span class="info-label">Težina</span>
+                    <span class="info-value severity-text">{{ incident()!.tezinaIncidenta }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>info</mat-icon>
+                  <div>
+                    <span class="info-label">Status</span>
+                    <span class="info-value">{{ incident()!.statusIncidenta }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="description-section" *ngIf="incident()!.opis">
+                <h3>Opis Incidenta</h3>
+                <p class="description-text">{{ incident()!.opis }}</p>
+              </div>
+
+              <div class="description-section" *ngIf="!incident()!.opis">
+                <p class="no-description">Opis nije unet za ovaj incident.</p>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Učesnici Tab -->
+          <mat-tab label="Učesnici">
+            <div class="tab-content">
+              
+              <!-- Vozač -->
+              <div class="participant-section">
+                <h3>
+                  <mat-icon>person</mat-icon>
+                  Vozač
+                </h3>
+                <div *ngIf="incident()!.idVozaca" class="participant-card">
+                  <div class="participant-avatar">
+                    {{ incident()!.imeVozaca?.charAt(0) }}{{ incident()!.prezimeVozaca?.charAt(0) }}
+                  </div>
+                  <div class="participant-info">
+                    <h4>{{ incident()!.imeVozaca }} {{ incident()!.prezimeVozaca }}</h4>
+                    <p>ID: #{{ incident()!.idVozaca }}</p>
+                  </div>
+                  <button mat-raised-button color="primary" [routerLink]="['/app/vozaci', incident()!.idVozaca]">
+                    <mat-icon>visibility</mat-icon>
+                    Vidi Profil
+                  </button>
+                </div>
+                <div *ngIf="!incident()!.idVozaca" class="no-participant">
+                  <mat-icon>person_off</mat-icon>
+                  <p>Vozač nije evidentiran</p>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <!-- Vozilo -->
+              <div class="participant-section">
+                <h3>
+                  <mat-icon>directions_car</mat-icon>
+                  Vozilo
+                </h3>
+                <div *ngIf="incident()!.idVozila" class="participant-card">
+                  <div class="participant-icon">
+                    <mat-icon>directions_car</mat-icon>
+                  </div>
+                  <div class="participant-info">
+                    <h4>{{ incident()!.registracijaVozila }}</h4>
+                    <p>ID: #{{ incident()!.idVozila }}</p>
+                  </div>
+                  <button mat-raised-button color="primary" [routerLink]="['/app/vozila', incident()!.idVozila]">
+                    <mat-icon>visibility</mat-icon>
+                    Vidi Detalje
+                  </button>
+                </div>
+                <div *ngIf="!incident()!.idVozila" class="no-participant">
+                  <mat-icon>car_rental</mat-icon>
+                  <p>Vozilo nije evidentirano</p>
+                </div>
+              </div>
+
+            </div>
+          </mat-tab>
+
+          <!-- Povezani Zapisi Tab -->
+          <mat-tab label="Povezani Zapisi">
+            <div class="tab-content">
+              <div class="related-section">
+                <h3>Kazne</h3>
+                <p class="coming-soon">Biće prikazane kazne vezane za ovaj incident</p>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="related-section">
+                <h3>Obaveštenja</h3>
+                <p class="coming-soon">Biće prikazana obaveštenja vezana za ovaj incident</p>
+              </div>
+            </div>
+          </mat-tab>
+
+        </mat-tab-group>
+      </mat-card-content>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-actions>
+        <button mat-button color="primary" [routerLink]="['/app/incidenti', incidentId, 'edit']">
+          <mat-icon>edit</mat-icon>
+          Izmeni Incident
+        </button>
+        <button mat-button color="warn" (click)="deleteIncident()">
+          <mat-icon>delete</mat-icon>
+          Obriši
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+  </div>
+</div>

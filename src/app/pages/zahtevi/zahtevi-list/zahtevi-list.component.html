@@ -20,6 +20,7 @@
 
   <div *ngIf="loading()" class="loading-container">
     <mat-spinner></mat-spinner>
+    <p>Učitavanje zahteva...</p>
   </div>
 
   <mat-card *ngIf="!loading()" class="table-card">
@@ -98,5 +99,59 @@
         </td>
       </tr>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let zahtev of filteredZahtevi()" class="mobile-card">
+        <!-- Header -->
+        <div class="mobile-card-header">
+          <span class="mobile-card-id">#{{ zahtev.idZahteva }}</span>
+          <div class="mobile-card-chips">
+            <mat-chip color="primary">{{ zahtev.datumVreme | date: 'dd.MM.yyyy HH:mm' }}</mat-chip>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>type</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Tip zahteva</span>
+              <span class="mobile-info-value">{{ getTipIcon(zahtev.tipZahteva) }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>description</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Opis</span>
+              <span class="mobile-info-value">{{ zahtev.opis || '-' }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>check_circle</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Status</span>
+              <span class="mobile-info-value">{{ zahtev.status }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="mobile-card-footer">
+          <button mat-icon-button [routerLink]="[zahtev.idZahteva, 'edit']" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteZahtev(zahtev.idZahteva)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- No Data -->
+      <div *ngIf="filteredZahtevi().length === 0" class="no-data-container">
+        <mat-icon>info</mat-icon>
+        <p>Nema podataka</p>
+      </div>
+    </div>
   </mat-card>
 </div>

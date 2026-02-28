@@ -6,7 +6,7 @@ import { VoziloResponseDTO, VoziloRequestDTO } from '../../models/vozilo.model';
 import { MockDataService } from './mock-data.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class VoziloService {
   private apiUrl = `${environment.apiUrl}/vozila`;
@@ -14,7 +14,7 @@ export class VoziloService {
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService,
+    private mockDataService: MockDataService
   ) {}
 
   getAllVozila(): Observable<VoziloResponseDTO[]> {
@@ -25,6 +25,19 @@ export class VoziloService {
   }
 
   getVoziloById(id: number): Observable<VoziloResponseDTO> {
+    if (this.useMockData) {
+      return new Observable(observer => {
+        this.mockDataService.getMockVozila().subscribe(vozila => {
+          const vozilo = vozila.find(v => v.idVozila === id);
+          if (vozilo) {
+            observer.next(vozilo);
+          } else {
+            observer.error({ message: 'Vozilo nije pronađeno' });
+          }
+          observer.complete();
+        });
+      });
+    }
     return this.http.get<VoziloResponseDTO>(`${this.apiUrl}/${id}`);
   }
 

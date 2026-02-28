@@ -1,3 +1,5 @@
+<!-- src/app/pages/incidenti/incidenti-list/incidenti-list.component.html -->
+
 <div class="page-container">
   <!-- Header -->
   <div class="page-header">
@@ -27,6 +29,7 @@
 
   <!-- Table -->
   <mat-card *ngIf="!loading()" class="table-card">
+    <!-- Desktop Table View -->
     <table mat-table [dataSource]="filteredIncidenti()" class="incidents-table">
 
       <!-- ID Column -->
@@ -90,6 +93,14 @@
         <th mat-header-cell *matHeaderCellDef>Akcije</th>
         <td mat-cell *matCellDef="let incident">
           <div class="action-buttons">
+            <button
+              mat-icon-button
+              [routerLink]="[incident.idIncidenta]"
+              matTooltip="Detalji"
+              color="accent"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
             <button mat-icon-button 
                     [routerLink]="[incident.idIncidenta, 'edit']"
                     matTooltip="Izmeni"
@@ -119,5 +130,70 @@
         </td>
       </tr>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let incident of filteredIncidenti()" class="mobile-card">
+        <div class="mobile-card-header">
+          <span class="mobile-card-id">#{{ incident.idIncidenta }}</span>
+          <div class="mobile-card-chips">
+            <mat-chip [color]="getTezinaColor(incident.tezinaIncidenta)">
+              {{ incident.tezinaIncidenta }}
+            </mat-chip>
+            <mat-chip [color]="getStatusColor(incident.statusIncidenta)">
+              {{ incident.statusIncidenta }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>schedule</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Datum i Vreme</span>
+              <span class="mobile-info-value">{{ incident.datumVreme | date:'dd.MM.yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>location_on</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Lokacija</span>
+              <span class="mobile-info-value">{{ incident.lokacija }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row" *ngIf="incident.imeVozaca">
+            <mat-icon>person</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Vozač</span>
+              <span class="mobile-info-value">{{ incident.imeVozaca }} {{ incident.prezimeVozaca }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-footer">
+          <button
+              mat-icon-button
+              [routerLink]="[incident.idIncidenta]"
+              matTooltip="Detalji"
+              color="accent"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+          <button mat-icon-button [routerLink]="[incident.idIncidenta, 'edit']" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteIncident(incident.idIncidenta)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="filteredIncidenti().length === 0" class="no-data-container">
+        <mat-icon>info</mat-icon>
+        <p>Nema pronađenih incidenata</p>
+      </div>
+    </div>
   </mat-card>
 </div>

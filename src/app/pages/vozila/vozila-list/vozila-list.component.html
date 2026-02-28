@@ -20,6 +20,7 @@
 
   <div *ngIf="loading()" class="loading-container">
     <mat-spinner></mat-spinner>
+    <p>Učitavanje liste vozila...</p>
   </div>
 
   <mat-card *ngIf="!loading()" class="table-card">
@@ -86,5 +87,55 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let vozilo of filteredVozila()" class="mobile-card">
+        <div class="mobile-card-header">
+          <span class="mobile-card-id">#{{ vozilo.idVozila }}</span>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>car</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Marka i Model</span>
+              <span class="mobile-info-value">{{ vozilo.marka }} {{ vozilo.model }}</span>
+            </div>
+            <div class="mobile-card-chips">
+              <mat-chip color="primary">Vozač: {{ vozilo.idVozaca }}</mat-chip>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>badge</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Registracija</span>
+              <span class="mobile-info-value">{{ vozilo.registracija }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>credit_card</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Godište</span>
+              <span class="mobile-info-value">{{ vozilo.godiste }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-footer">
+          <button mat-icon-button [routerLink]="[vozilo.idVozila]" color="accent">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button [routerLink]="[vozilo.idVozila, 'edit']" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteVozilo(vozilo.idVozila)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
   </mat-card>
 </div>

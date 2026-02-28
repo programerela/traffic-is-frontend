@@ -27,8 +27,22 @@ export class VozacService {
 
   // GET /api/vozaci/{id}
   getVozacById(id: number): Observable<VozacResponseDTO> {
+    if (this.useMockData) {
+      return new Observable(observer => {
+        this.mockDataService.getMockVozaci().subscribe(vozaci => {
+          const vozac = vozaci.find(v => v.idVozaca === id);
+          if (vozac) {
+            observer.next(vozac);
+          } else {
+            observer.error({ message: 'Vozač nije pronađen' });
+          }
+          observer.complete();
+        });
+      });
+  }
     return this.http.get<VozacResponseDTO>(`${this.apiUrl}/${id}`);
   }
+
 
   // GET /api/vozaci/jmbg/{jmbg}
   getVozacByJmbg(jmbg: string): Observable<VozacResponseDTO> {

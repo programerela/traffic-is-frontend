@@ -46,7 +46,6 @@ export class MainLayoutComponent {
     { label: 'Vozila', icon: 'directions_car', route: '/app/vozila' },
     { label: 'Incidenti', icon: 'warning', route: '/app/incidenti' },
     { label: 'Kazne', icon: 'gavel', route: '/app/kazne' },
-    { label: 'Signalizacija', icon: 'traffic', route: '/app/signalizacija' },
     { label: 'Zahtevi', icon: 'assignment', route: '/app/zahtevi' },
     { label: 'Obaveštenja', icon: 'notifications', route: '/app/obavestenja' },
     { 
