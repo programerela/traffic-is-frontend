@@ -3,22 +3,27 @@
   <div class="page-header">
     <div>
       <h1>{{ isEditMode ? 'Izmeni Incident' : 'Novi Incident' }}</h1>
-      <p class="page-subtitle">{{ isEditMode ? 'Ažurirajte podatke o incidentu' : 'Evidentiranje novog saobraćajnog incidenta' }}</p>
+      <p class="page-subtitle">
+        {{
+          isEditMode
+            ? 'Ažurirajte podatke o incidentu'
+            : 'Evidentiranje novog saobraćajnog incidenta'
+        }}
+      </p>
     </div>
   </div>
 
   <!-- Form Card -->
   <mat-card class="form-card">
     <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()">
-      
       <!-- Osnovni Podaci -->
       <div class="form-section">
         <h3>Osnovni Podaci</h3>
-        
+
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Datum i Vreme</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="datumVreme">
+            <input matInput [matDatepicker]="picker" formControlName="datumVreme" />
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="incidentForm.get('datumVreme')?.hasError('required')">
@@ -28,7 +33,7 @@
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Lokacija</mat-label>
-            <input matInput formControlName="lokacija" placeholder="Npr. Bulevar Oslobođenja 45">
+            <input matInput formControlName="lokacija" placeholder="Npr. Bulevar Oslobođenja 45" />
             <mat-icon matPrefix>location_on</mat-icon>
             <mat-error *ngIf="incidentForm.get('lokacija')?.hasError('required')">
               Lokacija je obavezna
@@ -41,14 +46,19 @@
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Opis Incidenta</mat-label>
-          <textarea matInput formControlName="opis" rows="4" placeholder="Detaljan opis incidenta..."></textarea>
+          <textarea
+            matInput
+            formControlName="opis"
+            rows="4"
+            placeholder="Detaljan opis incidenta..."
+          ></textarea>
         </mat-form-field>
       </div>
 
       <!-- Kategorija -->
       <div class="form-section">
         <h3>Kategorija i Status</h3>
-        
+
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Težina Incidenta</mat-label>
@@ -76,12 +86,24 @@
             </mat-error>
           </mat-form-field>
         </div>
+        <div
+          class="form-row"
+          *ngIf="isEditMode && incidentForm.get('statusIncidenta')?.value === 'obradjen'"
+        >
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Datum Obrade</mat-label>
+            <input matInput [matDatepicker]="pickerObrada" formControlName="datumObrade" />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerObrada"></mat-datepicker-toggle>
+            <mat-datepicker #pickerObrada></mat-datepicker>
+            <mat-hint>Automatski se popunjava kada se status promeni na "obrađen"</mat-hint>
+          </mat-form-field>
+        </div>
       </div>
 
       <!-- Učesnici -->
       <div class="form-section">
         <h3>Učesnici (Opciono)</h3>
-        
+
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Vozač</mat-label>
@@ -104,15 +126,34 @@
             </mat-select>
             <mat-icon matPrefix>directions_car</mat-icon>
           </mat-form-field>
+
+          <!-- Prikazi samo u edit modu kada je status "obradjen" -->
+          <mat-form-field
+            appearance="outline"
+            class="form-field"
+            *ngIf="isEditMode && incidentForm.get('statusIncidenta')?.value === 'obradjen'"
+          >
+            <mat-label>Obradio (Korisnik)</mat-label>
+            <mat-select formControlName="obradioKorisnikId">
+              <mat-option [value]="null">Nije evidentirano</mat-option>
+              <mat-option *ngFor="let k of korisnici" [value]="k.idUser">
+                {{ k.ime }} {{ k.prezime }} ({{ k.role }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>person_check</mat-icon>
+          </mat-form-field>
         </div>
       </div>
 
       <!-- Actions -->
       <div class="form-actions">
-        <button mat-button type="button" (click)="cancel()">
-          Otkaži
-        </button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="incidentForm.invalid || loading">
+        <button mat-button type="button" (click)="cancel()">Otkaži</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="incidentForm.invalid || loading"
+        >
           <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
           {{ isEditMode ? 'Sačuvaj Izmene' : 'Kreiraj Incident' }}
         </button>

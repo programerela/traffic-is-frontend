@@ -1,5 +1,3 @@
-// src/app/core/services/auth.service.ts
-
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';

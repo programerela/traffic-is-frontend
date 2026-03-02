@@ -59,6 +59,11 @@ export class VozaciListComponent implements OnInit {
     });
   }
 
+  isDozvolaIstekla(vozac: VozacResponseDTO): boolean {
+    if (!vozac.datumIstekaDozvole) return false;
+    return new Date(vozac.datumIstekaDozvole) < new Date();
+  }
+
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
     const filtered = this.vozaci().filter(

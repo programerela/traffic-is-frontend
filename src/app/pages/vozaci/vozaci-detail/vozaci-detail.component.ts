@@ -54,6 +54,12 @@ export class VozaciDetailComponent implements OnInit {
     }
   }
 
+  isDozvolaIstekla(): boolean {
+  const v = this.vozac();
+  if (!v?.datumIstekaDozvole) return false;
+  return new Date(v.datumIstekaDozvole) < new Date();
+}
+
   loadVozac(): void {
     this.loading.set(true);
     this.vozacService.getVozacById(this.vozacId).subscribe({

@@ -38,6 +38,7 @@
 /* Navigation List */
 .nav-list {
   padding: 0.5rem 0rem 0.5rem 1rem;
+  width: 70%;
 }
 
 .nav-item {
@@ -126,7 +127,7 @@
 
 /* User Menu */
 .user-menu-header {
-  background-color: white ;
+  background-color: white;
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -174,7 +175,13 @@
 /* Responsive */
 @media (max-width: 768px) {
   .sidenav {
-    width: 200px;
+    width: 120px;
+  }
+
+  .sidenav-header h3,
+  .sidenav-footer,
+  .nav-item span {
+    display: none;
   }
 
   .user-name {

@@ -20,7 +20,6 @@
 
   <!-- Kazna Details -->
   <div *ngIf="!loading() && kazna()" class="details-grid">
-    
     <!-- Main Info Card -->
     <mat-card class="main-card">
       <mat-card-header>
@@ -32,11 +31,13 @@
           </div>
           <div class="header-text">
             <mat-card-title>Kazna #{{ kazna()!.idKazne }}</mat-card-title>
-            <mat-card-subtitle>{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</mat-card-subtitle>
+            <mat-card-subtitle>{{
+              kazna()!.datumIzdavanja | date: 'dd.MM.yyyy'
+            }}</mat-card-subtitle>
           </div>
           <div class="amount-display">
             <span class="amount-label">Iznos</span>
-            <span class="amount-value">{{ kazna()!.iznos | number:'1.0-0' }} RSD</span>
+            <span class="amount-value">{{ kazna()!.iznos | number: '1.0-0' }} RSD</span>
           </div>
         </div>
       </mat-card-header>
@@ -44,7 +45,6 @@
       <mat-divider></mat-divider>
 
       <mat-card-content>
-        
         <!-- Status Section -->
         <div class="status-section">
           <div class="status-badge" [class]="'status-' + kazna()!.statusPlacanja">
@@ -55,10 +55,12 @@
             </div>
           </div>
 
-          <button mat-raised-button 
-                  color="primary" 
-                  *ngIf="kazna()!.statusPlacanja === 'nije placena'"
-                  (click)="markAsPaid()">
+          <button
+            mat-raised-button
+            color="primary"
+            *ngIf="kazna()!.statusPlacanja === 'nije placena'"
+            (click)="markAsPaid()"
+          >
             <mat-icon>check</mat-icon>
             Označi kao Plaćeno
           </button>
@@ -69,7 +71,7 @@
         <!-- Prekršaj Info -->
         <div class="info-section">
           <h3>Informacije o Prekršaju</h3>
-          
+
           <div class="info-grid">
             <div class="info-item">
               <mat-icon>warning</mat-icon>
@@ -83,7 +85,22 @@
               <mat-icon>calendar_today</mat-icon>
               <div>
                 <span class="info-label">Datum Izdavanja</span>
-                <span class="info-value">{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</span>
+                <span class="info-value">{{ kazna()!.datumIzdavanja | date: 'dd.MM.yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon [color]="isRokIstekao() ? 'warn' : ''">event_busy</mat-icon>
+              <div>
+                <span class="info-label">Rok Plaćanja</span>
+                <span class="info-value" [style.color]="isRokIstekao() ? 'red' : 'inherit'">
+                  {{
+                    kazna()!.rokPlacanja
+                      ? (kazna()!.rokPlacanja | date: 'dd.MM.yyyy')
+                      : 'Nije definisan'
+                  }}
+                  <span *ngIf="isRokIstekao()"> ⚠️ ISTEKAO</span>
+                </span>
               </div>
             </div>
           </div>
@@ -102,7 +119,7 @@
             <mat-icon>person</mat-icon>
             Prekršilac
           </h3>
-          
+
           <div class="participant-card">
             <div class="participant-avatar">
               {{ kazna()!.imeVozaca?.charAt(0) }}{{ kazna()!.prezimeVozaca?.charAt(0) }}
@@ -111,7 +128,11 @@
               <h4>{{ kazna()!.imeVozaca }} {{ kazna()!.prezimeVozaca }}</h4>
               <p>ID Vozača: #{{ kazna()!.idVozaca }}</p>
             </div>
-            <button mat-raised-button color="primary" [routerLink]="['/app/vozaci', kazna()!.idVozaca]">
+            <button
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/app/vozaci', kazna()!.idVozaca]"
+            >
               <mat-icon>visibility</mat-icon>
               Vidi Profil
             </button>
@@ -137,7 +158,6 @@
             </button>
           </div>
         </div>
-
       </mat-card-content>
 
       <mat-divider></mat-divider>
@@ -169,7 +189,7 @@
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Kazna Izdata</h4>
-              <p>{{ kazna()!.datumIzdavanja | date:'dd.MM.yyyy' }}</p>
+              <p>{{ kazna()!.datumIzdavanja | date: 'dd.MM.yyyy' }}</p>
             </div>
           </div>
 
@@ -182,9 +202,17 @@
               <p *ngIf="kazna()!.statusPlacanja === 'nije placena'" class="pending">Neplaćena</p>
             </div>
           </div>
+          <div class="timeline-item" [class.active]="isRokIstekao()">
+            <div class="timeline-dot" [style.background]="isRokIstekao() ? 'red' : ''"></div>
+            <div class="timeline-content">
+              <h4>Rok Plaćanja</h4>
+              <p *ngIf="kazna()!.rokPlacanja">{{ kazna()!.rokPlacanja | date: 'dd.MM.yyyy' }}</p>
+              <p *ngIf="!kazna()!.rokPlacanja">Nije definisan</p>
+              <p *ngIf="isRokIstekao()" class="pending">ROK ISTEKAO</p>
+            </div>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>
-
   </div>
 </div>

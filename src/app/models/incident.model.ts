@@ -10,6 +10,8 @@ export interface Incident {
   statusIncidenta: StatusIncidenta;
   idVozaca?: number;
   idVozila?: number;
+  obradioKorisnikIme?: string;
+  datumObrade?: string;      
 }
 
 export interface IncidentResponseDTO {
@@ -24,6 +26,8 @@ export interface IncidentResponseDTO {
   prezimeVozaca?: string;
   idVozila?: number;
   registracijaVozila?: string;
+  obradioKorisnikIme?: string;
+  datumObrade?: string;      
 }
 
 export interface IncidentRequestDTO {
@@ -34,4 +38,5 @@ export interface IncidentRequestDTO {
   statusIncidenta: StatusIncidenta;
   idVozaca?: number;
   idVozila?: number;
+  obradioKorisnikId?: number;
 }

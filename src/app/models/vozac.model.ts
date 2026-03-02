@@ -6,6 +6,8 @@ export interface Vozac {
   brojVozacke: string;
   adresa?: string;
   telefon?: string;
+  kazneniPoeni?: number;
+  datumIstekaDozvole?: string;
 }
 
 export interface VozacResponseDTO {
@@ -18,6 +20,8 @@ export interface VozacResponseDTO {
   telefon?: string;
   brojVozila?: number;
   brojKazni?: number;
+  kazneniPoeni?: number;
+  datumIstekaDozvole?: string;
 }
 
 export interface VozacRequestDTO {
@@ -27,4 +31,5 @@ export interface VozacRequestDTO {
   brojVozacke: string;
   adresa?: string;
   telefon?: string;
+  datumIstekaDozvole?: string;
 }

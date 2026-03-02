@@ -20,8 +20,21 @@ body {
   background-color: white !important;
 }
 
-button {
-  font-family: inherit;
+.mat-mdc-select-panel-above div.mat-mdc-select-panel  {
+  background-color: white;
+  padding: 1rem;
+}
+.mat-mdc-select-panel-above div.mat-mdc-select-panel  {
+  background-color: white;
+  padding: 1rem;
+}
+.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel {
+  background-color: white;
+  padding: 1rem;
+}
+.mat-mdc-form-field-icon-prefix > .mat-icon,
+.mat-mdc-form-field-icon-suffix > .mat-icon {
+  padding: 0 5px 0 10px !important;
 }
 
 /* Scrollbar styling */

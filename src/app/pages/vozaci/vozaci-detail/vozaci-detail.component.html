@@ -21,7 +21,6 @@
 
   <!-- Vozac Details -->
   <div *ngIf="!loading() && vozac()" class="details-container">
-    
     <!-- Profile Card -->
     <mat-card class="profile-card">
       <div class="profile-header">
@@ -34,7 +33,7 @@
           <div class="profile-stats">
             <mat-chip color="primary">Vozila: {{ vozac()!.brojVozila || 0 }}</mat-chip>
             <mat-chip [color]="(vozac()!.brojKazni || 0) > 0 ? 'warn' : 'accent'">
-              Kazne: {{ vozac()!.brojKazni || 0 }} 
+              Kazne: {{ vozac()!.brojKazni || 0 }}
             </mat-chip>
           </div>
         </div>
@@ -46,7 +45,7 @@
         <div class="info-grid">
           <div class="info-section">
             <h3>Lični Podaci</h3>
-            
+
             <div class="info-item">
               <mat-icon>badge</mat-icon>
               <div>
@@ -62,11 +61,38 @@
                 <span class="info-value">{{ vozac()!.brojVozacke }}</span>
               </div>
             </div>
+            <div class="info-item">
+              <mat-icon>star</mat-icon>
+              <div>
+                <span class="info-label">Kazneni Poeni</span>
+                <span
+                  class="info-value"
+                  [style.color]="(vozac()!.kazneniPoeni ?? 0) >= 10 ? 'red' : 'inherit'"
+                >
+                  {{ vozac()!.kazneniPoeni || 0 }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon [color]="isDozvolaIstekla() ? 'warn' : ''">credit_card</mat-icon>
+              <div>
+                <span class="info-label">Istek Vozačke Dozvole</span>
+                <span class="info-value" [style.color]="isDozvolaIstekla() ? 'red' : 'inherit'">
+                  {{
+                    vozac()!.datumIstekaDozvole
+                      ? (vozac()!.datumIstekaDozvole | date: 'dd.MM.yyyy')
+                      : 'Nije uneto'
+                  }}
+                  <span *ngIf="isDozvolaIstekla()"> ⚠️ ISTEKLA</span>
+                </span>
+              </div>
+            </div>
           </div>
 
           <div class="info-section">
             <h3>Kontakt Informacije</h3>
-            
+
             <div class="info-item">
               <mat-icon>home</mat-icon>
               <div>
@@ -89,11 +115,11 @@
       <mat-divider></mat-divider>
 
       <mat-card-actions>
-        <button mat-button color="primary" [routerLink]="['/app/vozaci', vozacId, 'edit']">
+        <button [routerLink]="['/app/vozaci', vozacId, 'edit']">
           <mat-icon>edit</mat-icon>
           Izmeni Podatke
         </button>
-        <button mat-button color="warn" (click)="deleteVozac()">
+        <button (click)="deleteVozac()">
           <mat-icon>delete</mat-icon>
           Obriši
         </button>
@@ -108,9 +134,12 @@
             <mat-icon>directions_car</mat-icon>
             Vozila Vozača
           </mat-card-title>
-          <button mat-raised-button color="primary" 
-                  routerLink="/app/vozila/new" 
-                  [queryParams]="{vozacId: vozacId}">
+          <button
+            mat-raised-button
+            color="primary"
+            routerLink="/app/vozila/new"
+            [queryParams]="{ vozacId: vozacId }"
+          >
             <mat-icon>add</mat-icon>
             Dodaj Vozilo
           </button>
@@ -126,7 +155,6 @@
         <!-- Vozila Table -->
         <div *ngIf="!vozilaLoading() && vozila().length > 0">
           <table mat-table [dataSource]="vozila()" class="vozila-table">
-            
             <ng-container matColumnDef="registracija">
               <th mat-header-cell *matHeaderCellDef>Registracija</th>
               <td mat-cell *matCellDef="let vozilo">
@@ -152,17 +180,19 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Akcije</th>
               <td mat-cell *matCellDef="let vozilo">
-                <button mat-icon-button 
-                        [routerLink]="['/app/vozila', vozilo.idVozila]"
-                        matTooltip="Detalji"
-                        color="primary">
+                <button
+                  mat-icon-button
+                  [routerLink]="['/app/vozila', vozilo.idVozila]"
+                  matTooltip="Detalji"
+                  color="primary"
+                >
                   <mat-icon>visibility</mat-icon>
                 </button>
               </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
         </div>
 
@@ -170,15 +200,17 @@
         <div *ngIf="!vozilaLoading() && vozila().length === 0" class="no-vozila">
           <mat-icon>car_rental</mat-icon>
           <p>Vozač nema registrovanih vozila</p>
-          <button mat-raised-button color="primary" 
-                  routerLink="/app/vozila/new" 
-                  [queryParams]="{vozacId: vozacId}">
+          <button
+            mat-raised-button
+            color="primary"
+            routerLink="/app/vozila/new"
+            [queryParams]="{ vozacId: vozacId }"
+          >
             <mat-icon>add</mat-icon>
             Registruj Prvo Vozilo
           </button>
         </div>
       </mat-card-content>
     </mat-card>
-
   </div>
 </div>

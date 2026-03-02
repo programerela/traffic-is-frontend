@@ -9,6 +9,7 @@ export interface Kazna {
   vrstaPrekrsaja: string;
   idIncidenta?: number;
   idVozaca: number;
+  rokPlacanja?: string;
 }
 
 export interface KaznaResponseDTO {
@@ -22,6 +23,7 @@ export interface KaznaResponseDTO {
   idVozaca: number;
   imeVozaca?: string;
   prezimeVozaca?: string;
+  rokPlacanja?: string;
 }
 
 export interface KaznaRequestDTO {
@@ -32,4 +34,5 @@ export interface KaznaRequestDTO {
   vrstaPrekrsaja: string;
   idIncidenta?: number;
   idVozaca: number;
+  rokPlacanja?: string;
 }

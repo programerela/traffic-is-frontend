@@ -20,7 +20,6 @@
 
   <!-- Incident Details -->
   <div *ngIf="!loading() && incident()" class="details-container">
-    
     <!-- Main Info Card -->
     <mat-card class="main-card">
       <mat-card-header>
@@ -32,7 +31,9 @@
           </div>
           <div class="header-text">
             <mat-card-title>Incident #{{ incident()!.idIncidenta }}</mat-card-title>
-            <mat-card-subtitle>{{ incident()!.datumVreme | date:'dd.MM.yyyy HH:mm' }}</mat-card-subtitle>
+            <mat-card-subtitle>{{
+              incident()!.datumVreme | date: 'dd.MM.yyyy HH:mm'
+            }}</mat-card-subtitle>
           </div>
           <div class="header-chips">
             <mat-chip [color]="getTezinaColor(incident()!.tezinaIncidenta)">
@@ -49,7 +50,6 @@
 
       <mat-card-content>
         <mat-tab-group>
-          
           <!-- Osnovni Podaci Tab -->
           <mat-tab label="Osnovni Podaci">
             <div class="tab-content">
@@ -58,7 +58,9 @@
                   <mat-icon>schedule</mat-icon>
                   <div>
                     <span class="info-label">Datum i Vreme</span>
-                    <span class="info-value">{{ incident()!.datumVreme | date:'dd.MM.yyyy HH:mm' }}</span>
+                    <span class="info-value">{{
+                      incident()!.datumVreme | date: 'dd.MM.yyyy HH:mm'
+                    }}</span>
                   </div>
                 </div>
 
@@ -85,6 +87,26 @@
                     <span class="info-value">{{ incident()!.statusIncidenta }}</span>
                   </div>
                 </div>
+                
+                <div class="info-item" *ngIf="incident()!.statusIncidenta === 'obradjen'">
+                  <mat-icon>person_check</mat-icon>
+                  <div>
+                    <span class="info-label">Obradio</span>
+                    <span class="info-value">{{
+                      incident()!.obradioKorisnikIme || 'Nije evidentirano'
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="incident()!.datumObrade">
+                  <mat-icon>check_circle</mat-icon>
+                  <div>
+                    <span class="info-label">Datum Obrade</span>
+                    <span class="info-value">{{
+                      incident()!.datumObrade | date: 'dd.MM.yyyy HH:mm'
+                    }}</span>
+                  </div>
+                </div>
               </div>
 
               <div class="description-section" *ngIf="incident()!.opis">
@@ -101,7 +123,6 @@
           <!-- Učesnici Tab -->
           <mat-tab label="Učesnici">
             <div class="tab-content">
-              
               <!-- Vozač -->
               <div class="participant-section">
                 <h3>
@@ -116,7 +137,11 @@
                     <h4>{{ incident()!.imeVozaca }} {{ incident()!.prezimeVozaca }}</h4>
                     <p>ID: #{{ incident()!.idVozaca }}</p>
                   </div>
-                  <button mat-raised-button color="primary" [routerLink]="['/app/vozaci', incident()!.idVozaca]">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    [routerLink]="['/app/vozaci', incident()!.idVozaca]"
+                  >
                     <mat-icon>visibility</mat-icon>
                     Vidi Profil
                   </button>
@@ -143,7 +168,11 @@
                     <h4>{{ incident()!.registracijaVozila }}</h4>
                     <p>ID: #{{ incident()!.idVozila }}</p>
                   </div>
-                  <button mat-raised-button color="primary" [routerLink]="['/app/vozila', incident()!.idVozila]">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    [routerLink]="['/app/vozila', incident()!.idVozila]"
+                  >
                     <mat-icon>visibility</mat-icon>
                     Vidi Detalje
                   </button>
@@ -153,7 +182,6 @@
                   <p>Vozilo nije evidentirano</p>
                 </div>
               </div>
-
             </div>
           </mat-tab>
 
@@ -173,23 +201,21 @@
               </div>
             </div>
           </mat-tab>
-
         </mat-tab-group>
       </mat-card-content>
 
       <mat-divider></mat-divider>
 
       <mat-card-actions>
-        <button mat-button color="primary" [routerLink]="['/app/incidenti', incidentId, 'edit']">
+        <button [routerLink]="['/app/incidenti', incidentId, 'edit']">
           <mat-icon>edit</mat-icon>
           Izmeni Incident
         </button>
-        <button mat-button color="warn" (click)="deleteIncident()">
+        <button (click)="deleteIncident()">
           <mat-icon>delete</mat-icon>
           Obriši
         </button>
       </mat-card-actions>
     </mat-card>
-
   </div>
 </div>

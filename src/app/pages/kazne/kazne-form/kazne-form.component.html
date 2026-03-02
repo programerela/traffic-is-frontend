@@ -1,1 +1,135 @@
-<p>kazne-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>{{ isEditMode ? 'Izmeni Kaznu' : 'Nova Kazna' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Ažurirajte podatke o kazni' : 'Evidentiranje novog prekršajnog naloga' }}</p>
+    </div>
+  </div>
+
+  <mat-card class="form-card">
+    <form [formGroup]="kaznaForm" (ngSubmit)="onSubmit()">
+
+      <!-- Prekršaj -->
+      <div class="form-section">
+        <h3>Informacije o Prekršaju</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vrsta Prekršaja</mat-label>
+            <mat-select formControlName="vrstaPrekrsaja">
+              <mat-option *ngFor="let vrsta of vrstePrekrsaja" [value]="vrsta">
+                {{ vrsta }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>warning</mat-icon>
+            <mat-error *ngIf="kaznaForm.get('vrstaPrekrsaja')?.hasError('required')">
+              Vrsta prekršaja je obavezna
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Iznos (RSD)</mat-label>
+            <input matInput type="number" formControlName="iznos" placeholder="Npr. 5000">
+            <mat-icon matPrefix>monetization_on</mat-icon>
+            <mat-error *ngIf="kaznaForm.get('iznos')?.hasError('required')">
+              Iznos je obavezan
+            </mat-error>
+            <mat-error *ngIf="kaznaForm.get('iznos')?.hasError('min')">
+              Iznos mora biti pozitivan
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field className= "opis" appearance="outline" class="full-width">
+          <mat-label>Opis Prekršaja</mat-label>
+          <textarea matInput formControlName="opisPrekrsaja" rows="3" 
+                    placeholder="Detaljan opis prekršaja..."></textarea>
+          <mat-error *ngIf="kaznaForm.get('opisPrekrsaja')?.hasError('required')">
+            Opis je obavezan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Datumi i Status -->
+      <div class="form-section">
+        <h3>Datumi i Status</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Datum Izdavanja</mat-label>
+            <input matInput [matDatepicker]="pickerIzdavanja" formControlName="datumIzdavanja">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerIzdavanja"></mat-datepicker-toggle>
+            <mat-datepicker #pickerIzdavanja></mat-datepicker>
+            <mat-error *ngIf="kaznaForm.get('datumIzdavanja')?.hasError('required')">
+              Datum izdavanja je obavezan
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Rok Plaćanja</mat-label>
+            <input matInput [matDatepicker]="pickerRok" formControlName="rokPlacanja">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerRok"></mat-datepicker-toggle>
+            <mat-datepicker #pickerRok></mat-datepicker>
+            <mat-hint>Automatski se postavlja 30 dana od izdavanja ako se ostavi prazno</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row" id="status">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Status Plaćanja</mat-label>
+            <mat-select formControlName="statusPlacanja">
+              <mat-option *ngFor="let status of statusOptions" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>payment</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Vozač i Incident -->
+      <div class="form-section">
+        <h3>Povazanost</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vozač (Prekršilac)</mat-label>
+            <mat-select formControlName="idVozaca">
+              <mat-option [value]="null">Odaberi vozača...</mat-option>
+              <mat-option *ngFor="let vozac of vozaci" [value]="vozac.idVozaca">
+                {{ vozac.ime }} {{ vozac.prezime }} ({{ vozac.brojVozacke }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="kaznaForm.get('idVozaca')?.hasError('required')">
+              Vozač je obavezan
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Povezan Incident (Opciono)</mat-label>
+            <mat-select formControlName="idIncidenta">
+              <mat-option [value]="null">Bez incidenta</mat-option>
+              <mat-option *ngFor="let incident of incidenti" [value]="incident.idIncidenta">
+                #{{ incident.idIncidenta }} - {{ incident.lokacija }} ({{ incident.datumVreme | date:'dd.MM.yyyy' }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>warning</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">
+          Otkaži
+        </button>
+        <button mat-raised-button color="primary" type="submit" 
+                [disabled]="kaznaForm.invalid || loading">
+          <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          {{ isEditMode ? 'Sačuvaj Izmene' : 'Kreiraj Kaznu' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

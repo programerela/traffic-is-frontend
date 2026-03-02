@@ -63,6 +63,10 @@
             <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'">
               Kazne: {{ vozac.brojKazni || 0 }}
             </mat-chip>
+            <mat-chip [color]="(vozac.kazneniPoeni ?? 0) >= 10 ? 'warn' : 'primary'">
+              Poeni: {{ vozac.kazneniPoeni || 0 }}
+            </mat-chip>
+            <mat-chip color="warn" *ngIf="isDozvolaIstekla(vozac)"> ⚠️ Dozvola istekla </mat-chip>
           </div>
         </td>
       </ng-container>
@@ -110,8 +114,8 @@
           <span class="mobile-card-id">#{{ vozac.idVozaca }}</span>
           <div class="mobile-card-chips">
             <mat-chip color="primary">Vozila: {{ vozac.brojVozila || 0 }}</mat-chip>
-            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'"> 
-             Kazne: {{ vozac.brojKazni || 0 }}
+            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'">
+              Kazne: {{ vozac.brojKazni || 0 }}
             </mat-chip>
           </div>
         </div>
@@ -146,6 +150,24 @@
             <div class="mobile-info-content">
               <span class="mobile-info-label">Telefon</span>
               <span class="mobile-info-value">{{ vozac.telefon }}</span>
+            </div>
+          </div>
+          <div class="mobile-info-row">
+            <mat-icon>star</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Kazneni Poeni</span>
+              <span
+                class="mobile-info-value"
+                [style.color]="(vozac.kazneniPoeni ?? 0) >= 10 ? 'red' : 'inherit'"
+              >
+                {{ vozac.kazneniPoeni || 0 }}
+              </span>
+            </div>
+          </div>
+          <div class="mobile-info-row" *ngIf="isDozvolaIstekla(vozac)">
+            <mat-icon color="warn">warning</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-value" style="color: red">Vozačka dozvola je istekla!</span>
             </div>
           </div>
         </div>
