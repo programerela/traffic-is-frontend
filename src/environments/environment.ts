@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api',
+  apiUrl: 'https://traffic-is-back.onrender.com',
   useMockData: false  // ← PROMENI NA false kada pokreneš backend
 };
 
