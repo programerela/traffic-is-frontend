@@ -45,19 +45,11 @@
           <input matInput formControlName="telefon" />
         </mat-form-field>
       </div>
-      <div class="form-section">
-        <h3>Podaci o vozilu</h3>
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Ime</mat-label>
-            <input matInput formControlName="ime" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Prezime</mat-label>
-            <input matInput formControlName="prezime" />
-          </mat-form-field>
-        </div>
+      <div class="form-section" *ngIf="!isEditMode">
+        <mat-icon style="color: #64748b; vertical-align: middle">info</mat-icon>
+        <span style="color: #64748b; font-size: 0.9rem">
+          Vozilo se dodaje nakon kreiranja vozača, iz stranice Detalji Vozača.
+        </span>
       </div>
 
       <div class="form-actions">

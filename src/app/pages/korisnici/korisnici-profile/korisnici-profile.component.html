@@ -1,0 +1,81 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Moj Profil</h1>
+      <p class="page-subtitle">Pregled podataka o nalogu</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/app/settings">
+      <mat-icon>settings</mat-icon>
+      Podešavanja
+    </button>
+  </div>
+
+  <div class="profile-layout" *ngIf="currentUser">
+
+    <!-- Avatar kartica -->
+    <mat-card class="avatar-card">
+      <div class="avatar-circle">{{ userInitials }}</div>
+      <h2>{{ currentUser.ime }} {{ currentUser.prezime }}</h2>
+      <p class="username-text">@{{ currentUser.username }}</p>
+      <mat-chip [color]="getRoleColor(currentUser.role)" class="role-chip">
+        <mat-icon>{{ getRoleIcon(currentUser.role) }}</mat-icon>
+        {{ getRoleLabel(currentUser.role) }}
+      </mat-chip>
+    </mat-card>
+
+    <!-- Info kartica -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>Podaci o nalogu</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+
+        <div class="info-row">
+          <div class="info-label">
+            <mat-icon>badge</mat-icon>
+            <span>ID Korisnika</span>
+          </div>
+          <span class="info-value">#{{ currentUser.idUser }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <div class="info-label">
+            <mat-icon>person</mat-icon>
+            <span>Ime</span>
+          </div>
+          <span class="info-value">{{ currentUser.ime }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <div class="info-label">
+            <mat-icon>person_outline</mat-icon>
+            <span>Prezime</span>
+          </div>
+          <span class="info-value">{{ currentUser.prezime }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <div class="info-label">
+            <mat-icon>alternate_email</mat-icon>
+            <span>Username</span>
+          </div>
+          <span class="info-value username-text">@{{ currentUser.username }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <div class="info-label">
+            <mat-icon>{{ getRoleIcon(currentUser.role) }}</mat-icon>
+            <span>Uloga</span>
+          </div>
+          <span class="info-value">{{ getRoleLabel(currentUser.role) }}</span>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

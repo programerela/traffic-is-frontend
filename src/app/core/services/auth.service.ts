@@ -19,7 +19,7 @@ export interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/korisnici`;
+  private apiUrl = `${environment.apiUrl}`;
   private useMockData = environment.useMockData;
 
   // Signals za reactive state

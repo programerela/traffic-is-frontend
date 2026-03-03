@@ -189,15 +189,48 @@
           <mat-tab label="Povezani Zapisi">
             <div class="tab-content">
               <div class="related-section">
-                <h3>Kazne</h3>
-                <p class="coming-soon">Biće prikazane kazne vezane za ovaj incident</p>
+                <h3>Kazne ({{ kazne().length }})</h3>
+                <div *ngIf="kazne().length === 0" class="no-participant">
+                  <mat-icon>gavel</mat-icon>
+                  <p>Nema kazni vezanih za ovaj incident</p>
+                </div>
+                <div *ngFor="let kazna of kazne()" class="related-item">
+                  <mat-icon color="warn">gavel</mat-icon>
+                  <div class="related-info">
+                    <strong>{{ kazna.vrstaPrekrsaja }}</strong>
+                    <span>{{ kazna.iznos | currency: 'RSD' : 'symbol' : '1.2-2' }}</span>
+                    <mat-chip [color]="kazna.statusPlacanja === 'placena' ? 'accent' : 'warn'">
+                      {{ kazna.statusPlacanja }}
+                    </mat-chip>
+                  </div>
+                  <button
+                    mat-icon-button
+                    [routerLink]="['/app/kazne', kazna.idKazne]"
+                    color="primary"
+                  >
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
               </div>
 
               <mat-divider></mat-divider>
 
               <div class="related-section">
-                <h3>Obaveštenja</h3>
-                <p class="coming-soon">Biće prikazana obaveštenja vezana za ovaj incident</p>
+                <h3>Obaveštenja ({{ obavestenja().length }})</h3>
+                <div *ngIf="obavestenja().length === 0" class="no-participant">
+                  <mat-icon>notifications_off</mat-icon>
+                  <p>Nema obaveštenja vezanih za ovaj incident</p>
+                </div>
+                <div *ngFor="let ob of obavestenja()" class="related-item">
+                  <mat-icon [color]="ob.prioritet === 'visok' ? 'warn' : 'primary'"
+                    >notifications</mat-icon
+                  >
+                  <div class="related-info">
+                    <strong>{{ ob.vrsta }}</strong>
+                    <span>{{ ob.tekst }}</span>
+                    <mat-chip>{{ ob.prioritet }}</mat-chip>
+                  </div>
+                </div>
               </div>
             </div>
           </mat-tab>

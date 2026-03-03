@@ -1,0 +1,68 @@
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.page-header {
+  margin-bottom: 1.5rem;
+}
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: #1e293b;
+}
+.page-subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.settings-card {
+  padding: 0.5rem;
+}
+.settings-card mat-card-header {
+  margin-bottom: 0;
+  padding-bottom: 1rem;
+}
+.settings-card mat-card-content {
+  padding-top: 1.5rem;
+}
+.settings-card mat-icon[mat-card-avatar] {
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  color: #3b82f6;
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+.form-field {
+  flex: 1;
+  min-width: 200px;
+}
+.full-width {
+  width: 100%;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+  }
+  .form-field {
+    min-width: unset;
+    width: 100%;
+  }
+  .form-actions button {
+    width: 100%;
+  }
+}

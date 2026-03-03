@@ -1,8 +1,7 @@
-// src/app/core/services/analytics.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   DashboardStatistika,
@@ -11,93 +10,114 @@ import {
   TopVozacSaKaznama,
   PeriodIzvestaj,
   StatistikaPoVrsti,
-  SignalizacijaStatistika
+  SignalizacijaStatistika,
 } from '../../models/analytics.model';
 import { MockDataService } from './mock-data.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AnalyticsService {
   private apiUrl = `${environment.apiUrl}/analytics`;
+  private kazneUrl = `${environment.apiUrl}/kazne`;
+  private vozaciUrl = `${environment.apiUrl}/vozaci`;
   private useMockData = environment.useMockData;
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService
+    private mockDataService: MockDataService,
   ) {}
 
-  // GET /api/analytics/dashboard
   getDashboardStatistika(): Observable<DashboardStatistika> {
-    if (this.useMockData) {
-      return this.mockDataService.getMockDashboardStatistika();
-    }
+    if (this.useMockData) return this.mockDataService.getMockDashboardStatistika();
     return this.http.get<DashboardStatistika>(`${this.apiUrl}/dashboard`);
   }
 
-  // GET /api/analytics/incidenti/tezina
   getIncidentiPoTezini(): Observable<IncidentStatistikaPoTezini[]> {
-       if (this.useMockData) {
-      return this.mockDataService.getMockIncidentiPoTezini();
-    }
+    if (this.useMockData) return this.mockDataService.getMockIncidentiPoTezini();
     return this.http.get<IncidentStatistikaPoTezini[]>(`${this.apiUrl}/incidenti/tezina`);
   }
 
-  // GET /api/analytics/incidenti/top-lokacije
   getTopLokacije(): Observable<TopLokacija[]> {
-       if (this.useMockData) {
-      return this.mockDataService.getMockTopLokacije();
-    }
-    return this.http.get<TopLokacija[]>(`${this.apiUrl}/incidenti/top-lokacije`);
+    if (this.useMockData) return this.mockDataService.getMockTopLokacije();
+    return this.http.get<any>(`${this.apiUrl}/incidenti/top-lokacije`).pipe(
+      map((data) => {
+        if (Array.isArray(data)) return data;
+        return Object.entries(data).map(([lokacija, brojIncidenata]) => ({
+          lokacija,
+          brojIncidenata: brojIncidenata as number,
+        }));
+      }),
+    );
   }
 
-  // GET /api/analytics/vozaci/top-kazne
   getTopVozaciSaKaznama(): Observable<TopVozacSaKaznama[]> {
-       if (this.useMockData) {
-      return this.mockDataService.getMockTopVozaciSaKaznama();
-    }
-    return this.http.get<TopVozacSaKaznama[]>(`${this.apiUrl}/vozaci/top-kazne`);
+    if (this.useMockData) return this.mockDataService.getMockTopVozaciSaKaznama();
+    return this.http.get<any>(`${this.apiUrl}/vozaci/top-kazne`).pipe(
+      map((data) => {
+        const lista = data.top10Vozaca ?? data;
+        return lista.map(
+          (item: any) =>
+            ({
+              imeVozaca: item.vozac?.split(' ')[0] ?? '',
+              prezimeVozaca: item.vozac?.split(' ')[1] ?? '',
+              idVozaca: item.idVozaca,
+              brojKazni: item.brojKazni,
+              ukupanIznos: item.iznosNeplacenih ?? 0,
+            }) as TopVozacSaKaznama,
+        );
+      }),
+    );
   }
 
-  // GET /api/analytics/izvestaj/mesecni?godina&mesec
   getMesecniIzvestaj(godina: number, mesec: number): Observable<PeriodIzvestaj> {
     const params = new HttpParams().set('godina', godina.toString()).set('mesec', mesec.toString());
-    if (this.useMockData) {
-      return this.mockDataService.getMockPeriodIzvestaj(godina, mesec);
-    }
-    return this.http.get<PeriodIzvestaj>(`${this.apiUrl}/izvestaj/mesecni`, { params });
+    if (this.useMockData) return this.mockDataService.getMockPeriodIzvestaj(godina, mesec);
+    return this.http.get<any>(`${this.apiUrl}/izvestaj/mesecni`, { params }).pipe(
+      map(
+        (data) =>
+          ({
+            ukupnoIncidenata: data.ukupanBrojIncidenata ?? 0,
+            ukupnoKazni: data.ukupnoKazni ?? 0,
+            ukupanIznosKazni: data.ukupanIznosKazni ?? 0,
+            incidentiPoTezini: data.poTezini ?? {},
+            incidentiPoStatusu: data.poStatusu ?? {},
+            period: data.period,
+          }) as unknown as PeriodIzvestaj,
+      ),
+    );
   }
 
-  // GET /api/analytics/izvestaj/godisnji?godina
   getGodisnjiIzvestaj(godina: number): Observable<PeriodIzvestaj> {
     const params = new HttpParams().set('godina', godina.toString());
-       if (this.useMockData) {
-      return this.mockDataService.getMockPeriodIzvestaj(godina, 1);
-    }
-    return this.http.get<PeriodIzvestaj>(`${this.apiUrl}/izvestaj/godisnji`, { params });
+    if (this.useMockData) return this.mockDataService.getMockPeriodIzvestaj(godina, 1);
+    return this.http.get<any>(`${this.apiUrl}/izvestaj/godisnji`, { params }).pipe(
+      map(
+        (data) =>
+          ({
+            ukupnoIncidenata: data.ukupanBrojIncidenata ?? 0,
+            ukupnoKazni: data.ukupnoKazni ?? 0,
+            ukupanIznosKazni: data.ukupanIznosKazni ?? 0,
+            incidentiPoTezini: data.poTezini ?? {},
+            incidentiPoStatusu: data.poMesecima ?? {},
+            godina: data.godina,
+          }) as unknown as PeriodIzvestaj,
+      ),
+    );
   }
 
-  // GET /api/analytics/kazne/vrsta
   getKaznePoVrsti(): Observable<StatistikaPoVrsti[]> {
-       if (this.useMockData) {
-      return this.mockDataService.getMockKaznePoVrsti();
-    }
+    if (this.useMockData) return this.mockDataService.getMockKaznePoVrsti();
     return this.http.get<StatistikaPoVrsti[]>(`${this.apiUrl}/kazne/vrsta`);
   }
 
-  // GET /api/analytics/kazne/status
   getKaznePoStatusu(): Observable<StatistikaPoVrsti[]> {
-    if (this.useMockData) {
-      return this.mockDataService.getMockKaznePoStatusu();
-    }
+    if (this.useMockData) return this.mockDataService.getMockKaznePoStatusu();
     return this.http.get<StatistikaPoVrsti[]>(`${this.apiUrl}/kazne/status`);
   }
 
-  // GET /api/analytics/signalizacija/status
   getSignalizacijaStatistika(): Observable<SignalizacijaStatistika> {
-    if (this.useMockData) {
-      return this.mockDataService.getMockSignalizacijaStatistika();
-    }
+    if (this.useMockData) return this.mockDataService.getMockSignalizacijaStatistika();
     return this.http.get<SignalizacijaStatistika>(`${this.apiUrl}/signalizacija/status`);
   }
 }

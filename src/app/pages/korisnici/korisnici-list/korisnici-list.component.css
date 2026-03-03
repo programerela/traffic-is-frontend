@@ -33,10 +33,10 @@
   padding: 4rem 0;
 }
 .table-card {
-  overflow-x: auto;
+  overflow: hidden;
 }
 .data-table {
-  width: 700px;
+  width: 100%;
 }
 .data-table th {
   background-color: #f8fafc;
@@ -46,127 +46,110 @@
 .name-cell {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
-.name-cell mat-icon {
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.current-user-badge {
+  color: #3b82f6;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.username-text {
   color: #64748b;
-  font-size: 20px;
+  font-family: monospace;
+  font-size: 0.95rem;
 }
-.stats-chips {
-  flex-wrap: wrap;
-  gap: 0.25rem;
+.role-chip {
+  text-transform: capitalize;
 }
-mat-chip {
-  font-size: 0.75rem !important;
-  min-height: 22px !important;
+.role-chip mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  margin-right: 4px;
 }
 .action-buttons {
   display: flex;
   gap: 0.25rem;
 }
-
 .mobile-cards {
   display: none;
 }
 
-/* Responsive Mobile Layout */
 @media (max-width: 768px) {
-  /* Header Adjustments */
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-
-  .page-header h1 {
-    font-size: 1.5rem;
-  }
-
   .page-header button {
     width: 100%;
     justify-content: center;
   }
-
-  .page-subtitle {
-    font-size: 0.875rem;
-  }
-
-  /* Filter Adjustments */
-  .search-field,
-  .filter-card mat-form-field {
+  .search-field {
     max-width: 100%;
   }
-
-  /* Hide table, show mobile cards */
   table[mat-table] {
     display: none !important;
   }
-
   .mobile-cards {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
-
-  /* Mobile Card Styling */
   .mobile-card {
     background-color: #fff;
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border-left: 4px solid #3b82f6;
-    transition: box-shadow 0.2s, transform 0.2s;
   }
-
-  .mobile-card:active {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: scale(0.98);
+  .mobile-card-admin {
+    border-left-color: #ef4444;
   }
-
-  /* Mobile Card Header */
+  .mobile-card-rukovodilac {
+    border-left-color: #8b5cf6;
+  }
   .mobile-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 1rem;
   }
-
-  .mobile-card-id {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #3b82f6;
-  }
-
-  .mobile-card-chips {
+  .mobile-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    color: white;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
   }
-
-  .mobile-card-chips mat-chip {
-    font-size: 0.75rem;
-    min-height: 24px;
-    padding: 0 8px;
-  }
-
-  /* Mobile Card Body */
   .mobile-card-body {
     margin-bottom: 1rem;
   }
-
   .mobile-info-row {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     margin-bottom: 0.75rem;
   }
-
-  .mobile-info-row:last-child {
-    margin-bottom: 0;
-  }
-
   .mobile-info-row mat-icon {
     color: #64748b;
     font-size: 20px;
@@ -175,12 +158,9 @@ mat-chip {
     margin-top: 2px;
     flex-shrink: 0;
   }
-
   .mobile-info-content {
     flex: 1;
-    min-width: 0;
   }
-
   .mobile-info-label {
     font-size: 0.75rem;
     color: #64748b;
@@ -189,69 +169,16 @@ mat-chip {
     display: block;
     margin-bottom: 0.25rem;
   }
-
   .mobile-info-value {
     font-size: 0.9375rem;
     color: #1e293b;
     font-weight: 500;
-    word-wrap: break-word;
   }
-
-  /* Mobile Card Footer */
   .mobile-card-footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
     padding-top: 0.75rem;
     border-top: 1px solid #e2e8f0;
-  }
-
-  .mobile-card-footer button {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  /* Status Variants */
-  .mobile-card.status-warning {
-    border-left-color: #f59e0b;
-  }
-
-  .mobile-card.status-error {
-    border-left-color: #ef4444;
-  }
-
-  .mobile-card.status-success {
-    border-left-color: #10b981;
-  }
-}
-
-/* Extra Small Screens */
-@media (max-width: 480px) {
-  .page-container {
-    padding: 0.5rem;
-  }
-
-  .filter-card {
-    padding: 0.75rem;
-  }
-
-  .mobile-cards {
-    padding: 0;
-  }
-
-  .mobile-card {
-    border-radius: 8px;
-  }
-
-  .mobile-info-value {
-    font-size: 0.875rem;
-  }
-
-  .mobile-card-footer button {
-    padding: 8px;
-  }
-
-  .mobile-card-footer button mat-icon {
-    font-size: 20px;
   }
 }

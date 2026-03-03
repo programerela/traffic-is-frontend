@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,8 +12,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { VozacService } from '../../../core/services/vozac.service';
+import { VoziloService } from '../../../core/services/vozilo.service';
+import { KazneService } from '../../../core/services/kazne.service';
 import { VozacResponseDTO } from '../../../models/vozac.model';
 import { PermissionService } from '../../../core/services/premission.service';
+
+// Lokalni tip koji proširuje DTO sa izračunatim poljima
+interface VozacWithStats extends VozacResponseDTO {
+  brojVozila: number;
+  brojKazni: number;
+}
 
 @Component({
   selector: 'app-vozaci-list',
@@ -34,13 +43,15 @@ import { PermissionService } from '../../../core/services/premission.service';
   styleUrls: ['./vozaci-list.component.css'],
 })
 export class VozaciListComponent implements OnInit {
-  vozaci = signal<VozacResponseDTO[]>([]);
-  filteredVozaci = signal<VozacResponseDTO[]>([]);
+  vozaci = signal<VozacWithStats[]>([]);
+  filteredVozaci = signal<VozacWithStats[]>([]);
   loading = signal(true);
   displayedColumns = ['idVozaca', 'ime', 'jmbg', 'brojVozacke', 'telefon', 'statistika', 'actions'];
 
   constructor(
     private vozacService: VozacService,
+    private voziloService: VoziloService,
+    private kazneService: KazneService,
     public permissionService: PermissionService,
   ) {}
 
@@ -50,14 +61,27 @@ export class VozaciListComponent implements OnInit {
 
   loadVozaci(): void {
     this.loading.set(true);
-    this.vozacService.getAllVozaci().subscribe({
-      next: (data) => {
-        this.vozaci.set(data);
-        this.filteredVozaci.set(data);
+
+    // Učitaj vozače, vozila i kazne paralelno
+    forkJoin({
+      vozaci: this.vozacService.getAllVozaci(),
+      vozila: this.voziloService.getAllVozila(),
+      kazne: this.kazneService.getAllKazne(),
+    }).subscribe({
+      next: ({ vozaci, vozila, kazne }) => {
+        // Izračunaj statistiku po vozaču na frontu
+        const vozaciWithStats: VozacWithStats[] = vozaci.map((vozac) => ({
+          ...vozac,
+          brojVozila: vozila.filter((v) => v.idVozaca === vozac.idVozaca).length,
+          brojKazni: kazne.filter((k) => k.idVozaca === vozac.idVozaca).length,
+        }));
+
+        this.vozaci.set(vozaciWithStats);
+        this.filteredVozaci.set(vozaciWithStats);
         this.loading.set(false);
       },
       error: (error) => {
-        console.error('Error:', error);
+        console.error('Greška pri učitavanju:', error);
         this.loading.set(false);
       },
     });
@@ -84,7 +108,7 @@ export class VozaciListComponent implements OnInit {
     if (confirm('Da li ste sigurni?')) {
       this.vozacService.deleteVozac(id).subscribe({
         next: () => this.loadVozaci(),
-        error: (error) => alert('Greška!'),
+        error: () => alert('Greška pri brisanju!'),
       });
     }
   }

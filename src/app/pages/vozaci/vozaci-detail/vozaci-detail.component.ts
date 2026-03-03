@@ -16,24 +16,36 @@ import { VoziloService } from '../../../core/services/vozilo.service';
 import { PermissionService } from '../../../core/services/premission.service';
 import { VozacResponseDTO } from '../../../models/vozac.model';
 import { VoziloResponseDTO } from '../../../models/vozilo.model';
+import { KazneService } from '../../../core/services/kazne.service';
+import { KaznaResponseDTO } from '../../../models/kazna.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-vozaci-detail',
   standalone: true,
   imports: [
-    CommonModule, RouterLink,
-    MatCardModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule,
-    MatDividerModule, MatChipsModule, MatTableModule, MatTooltipModule
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatDividerModule,
+    MatChipsModule,
+    MatTableModule,
+    MatTooltipModule,
   ],
   templateUrl: './vozaci-detail.component.html',
-  styleUrl: './vozaci-detail.component.css'
+  styleUrl: './vozaci-detail.component.css',
 })
 export class VozaciDetailComponent implements OnInit {
   vozac = signal<VozacResponseDTO | null>(null);
   vozila = signal<VoziloResponseDTO[]>([]);
+  kazneVozaca = signal<KaznaResponseDTO[]>([]);
+  brojKazni = signal(0);
   loading = signal(true);
   vozilaLoading = signal(true);
-  
+
   vozacId!: number;
   displayedColumns = ['registracija', 'marka', 'model', 'godiste', 'actions'];
 
@@ -42,55 +54,51 @@ export class VozaciDetailComponent implements OnInit {
     private router: Router,
     private vozacService: VozacService,
     private voziloService: VoziloService,
-    public permissionService: PermissionService
+    private kazneService: KazneService,
+    public permissionService: PermissionService,
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.vozacId = +id;
-      this.loadVozac();
-      this.loadVozilaVozaca();
+      this.loadAll();
     } else {
       this.router.navigate(['/app/vozaci']);
     }
   }
 
-  isDozvolaIstekla(): boolean {
-  const v = this.vozac();
-  if (!v?.datumIstekaDozvole) return false;
-  return new Date(v.datumIstekaDozvole) < new Date();
-}
-
-  loadVozac(): void {
+  loadAll(): void {
     this.loading.set(true);
-    this.vozacService.getVozacById(this.vozacId).subscribe({
-      next: (data) => {
-        this.vozac.set(data);
+    forkJoin({
+      vozac: this.vozacService.getVozacById(this.vozacId),
+      vozila: this.voziloService.getAllVozila(),
+      kazne: this.kazneService.getAllKazne(),
+    }).subscribe({
+      next: ({ vozac, vozila, kazne }) => {
+        this.vozac.set(vozac);
+
+        const vozilaVozaca = vozila.filter((v) => v.idVozaca === this.vozacId);
+        this.vozila.set(vozilaVozaca);
+
+        const kazneVozaca = kazne.filter((k) => k.idVozaca === this.vozacId);
+        this.kazneVozaca.set(kazneVozaca);
+        this.brojKazni.set(kazneVozaca.length);
+
         this.loading.set(false);
+        this.vozilaLoading.set(false);
       },
-      error: (error) => {
-        console.error('Error loading vozac:', error);
-        alert('Greška pri učitavanju vozača!');
+      error: () => {
+        alert('Greška pri učitavanju podataka!');
         this.router.navigate(['/app/vozaci']);
-      }
+      },
     });
   }
 
-  loadVozilaVozaca(): void {
-    this.vozilaLoading.set(true);
-    // Get all vozila and filter by this vozac
-    this.voziloService.getAllVozila().subscribe({
-      next: (data) => {
-        const vozilaVozaca = data.filter(v => v.idVozaca === this.vozacId);
-        this.vozila.set(vozilaVozaca);
-        this.vozilaLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading vozila:', error);
-        this.vozilaLoading.set(false);
-      }
-    });
+  isDozvolaIstekla(): boolean {
+    const v = this.vozac();
+    if (!v?.datumIstekaDozvole) return false;
+    return new Date(v.datumIstekaDozvole) < new Date();
   }
 
   deleteVozac(): void {
@@ -103,7 +111,7 @@ export class VozaciDetailComponent implements OnInit {
         error: (error) => {
           console.error('Error deleting vozac:', error);
           alert('Greška pri brisanju vozača!');
-        }
+        },
       });
     }
   }

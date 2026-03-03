@@ -70,11 +70,11 @@
   color: #f59e0b;
 }
 
-.header-icon[class*="povredenima"] {
+.header-icon[class*='povredenima'] {
   color: #ef4444;
 }
 
-.header-icon[class*="poginulima"] {
+.header-icon[class*='poginulima'] {
   color: #7f1d1d;
 }
 
@@ -294,6 +294,21 @@ button {
   font-weight: 600;
   color: #334155;
   margin: 0 0 1rem 0;
+}
+.related-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.related-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .coming-soon {

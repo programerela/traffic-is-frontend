@@ -1,0 +1,148 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Korisnici</h1>
+      <p class="page-subtitle">Upravljanje korisnicima sistema</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="new"
+            *ngIf="permissionService.canManageUsers()">
+      <mat-icon>person_add</mat-icon>
+      Novi Korisnik
+    </button>
+  </div>
+
+  <mat-card class="filter-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pretraži korisnike</mat-label>
+      <input matInput (keyup)="applyFilter($event)"
+             placeholder="Ime, username, uloga..." />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje liste korisnika...</p>
+  </div>
+
+  <mat-card *ngIf="!loading()" class="table-card">
+    <table mat-table [dataSource]="filteredKorisnici()" class="data-table">
+
+      <ng-container matColumnDef="idUser">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let korisnik">#{{ korisnik.idUser }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ime">
+        <th mat-header-cell *matHeaderCellDef>Ime i Prezime</th>
+        <td mat-cell *matCellDef="let korisnik">
+          <div class="name-cell">
+            <div class="avatar">{{ korisnik.ime.charAt(0) }}{{ korisnik.prezime.charAt(0) }}</div>
+            <div>
+              <strong>{{ korisnik.ime }} {{ korisnik.prezime }}</strong>
+              <span class="current-user-badge" *ngIf="isCurrentUser(korisnik)"> (Vi)</span>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let korisnik">
+          <span class="username-text">@{{ korisnik.username }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Uloga</th>
+        <td mat-cell *matCellDef="let korisnik">
+          <mat-chip [color]="getRoleColor(korisnik.role)" class="role-chip">
+            <mat-icon>{{ getRoleIcon(korisnik.role) }}</mat-icon>
+            {{ korisnik.role }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Akcije</th>
+        <td mat-cell *matCellDef="let korisnik">
+          <div class="action-buttons">
+            <button mat-icon-button
+                    [routerLink]="[korisnik.idUser, 'edit']"
+                    matTooltip="Izmeni"
+                    color="primary"
+                    *ngIf="permissionService.canManageUsers()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button
+                    (click)="deleteKorisnik(korisnik.idUser)"
+                    matTooltip="Obriši"
+                    color="warn"
+                    *ngIf="permissionService.canManageUsers() && !isCurrentUser(korisnik)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-cards">
+      <div *ngFor="let korisnik of filteredKorisnici()" class="mobile-card"
+           [class.mobile-card-admin]="korisnik.role === 'admin'"
+           [class.mobile-card-rukovodilac]="korisnik.role === 'rukovodilac'">
+
+        <div class="mobile-card-header">
+          <div class="mobile-avatar">
+            {{ korisnik.ime.charAt(0) }}{{ korisnik.prezime.charAt(0) }}
+          </div>
+          <div class="mobile-card-chips">
+            <mat-chip [color]="getRoleColor(korisnik.role)">
+              <mat-icon>{{ getRoleIcon(korisnik.role) }}</mat-icon>
+              {{ korisnik.role }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="mobile-info-row">
+            <mat-icon>person</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Ime i Prezime</span>
+              <span class="mobile-info-value">
+                {{ korisnik.ime }} {{ korisnik.prezime }}
+                <span class="current-user-badge" *ngIf="isCurrentUser(korisnik)"> (Vi)</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="mobile-info-row">
+            <mat-icon>alternate_email</mat-icon>
+            <div class="mobile-info-content">
+              <span class="mobile-info-label">Username</span>
+              <span class="mobile-info-value username-text">@{{ korisnik.username }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-footer">
+          <button mat-icon-button
+                  [routerLink]="[korisnik.idUser, 'edit']"
+                  color="primary"
+                  *ngIf="permissionService.canManageUsers()">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button
+                  (click)="deleteKorisnik(korisnik.idUser)"
+                  color="warn"
+                  *ngIf="permissionService.canManageUsers() && !isCurrentUser(korisnik)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

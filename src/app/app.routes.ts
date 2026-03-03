@@ -47,6 +47,13 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/kazne/kazne.routes').then((m) => m.KAZNE_ROUTES),
       },
       {
+        path: 'obavestenja',
+        loadComponent: () =>
+          import('./pages/obavestenja/obavestenja-list/obavestenja-list.component').then(
+            (m) => m.ObavestenjaListComponent,
+          ),
+      },
+      {
         path: 'signalizacija',
         loadComponent: () =>
           import('./pages/signalizacija/signalizacija-list/signalizacija-list.component').then(
@@ -66,10 +73,26 @@ export const routes: Routes = [
       {
         path: 'korisnici',
         loadComponent: () =>
-          import('./pages/korisnici/korisnici-list.component').then(
+          import('./pages/korisnici/korisnici-list/korisnici-list.component').then(
             (m) => m.KorisniciListComponent,
           ),
         canActivate: [authGuard, canManageUsersGuard],
+      },
+      {
+        path: 'profil',
+        loadComponent: () =>
+          import('./pages/korisnici/korisnici-profile/korisnici-profile.component').then(
+            (m) => m.KorisniciProfileComponent,
+          ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'podesavanja',
+        loadComponent: () =>
+          import('./pages/korisnici/korisnici-settings/korisnici-settings.component').then(
+            (m) => m.KorisniciSettingsComponent,
+          ),
+        canActivate: [authGuard],
       },
       {
         path: '',

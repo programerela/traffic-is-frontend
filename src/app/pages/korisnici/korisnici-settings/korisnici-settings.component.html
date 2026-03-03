@@ -1,0 +1,116 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Podešavanja</h1>
+      <p class="page-subtitle">Upravljajte svojim nalogom</p>
+    </div>
+  </div>
+
+  <div class="settings-layout">
+
+    <!-- Izmena podataka -->
+    <mat-card class="settings-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>manage_accounts</mat-icon>
+        <mat-card-title>Lični Podaci</mat-card-title>
+        <mat-card-subtitle>Izmenite ime, prezime i username</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <form [formGroup]="podaciForm" (ngSubmit)="sacuvajPodatke()">
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Ime</mat-label>
+              <input matInput formControlName="ime">
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-error *ngIf="podaciForm.get('ime')?.hasError('required')">
+                Ime je obavezno
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Prezime</mat-label>
+              <input matInput formControlName="prezime">
+              <mat-icon matPrefix>person_outline</mat-icon>
+              <mat-error *ngIf="podaciForm.get('prezime')?.hasError('required')">
+                Prezime je obavezno
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-icon matPrefix>alternate_email</mat-icon>
+            <mat-error *ngIf="podaciForm.get('username')?.hasError('required')">
+              Username je obavezan
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit"
+                    [disabled]="podaciForm.invalid || loadingPodaci">
+              <mat-icon>save</mat-icon>
+              {{ loadingPodaci ? 'Čuvanje...' : 'Sačuvaj Podatke' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Promena lozinke -->
+    <mat-card class="settings-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>lock</mat-icon>
+        <mat-card-title>Promena Lozinke</mat-card-title>
+        <mat-card-subtitle>Postavite novu lozinku za nalog</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <form [formGroup]="lozinkaForm" (ngSubmit)="promeniLozinku()">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nova Lozinka</mat-label>
+            <input matInput formControlName="novaLozinka"
+                   [type]="hideNovaLozinka ? 'password' : 'text'">
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hideNovaLozinka = !hideNovaLozinka">
+              <mat-icon>{{ hideNovaLozinka ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="lozinkaForm.get('novaLozinka')?.hasError('required')">
+              Lozinka je obavezna
+            </mat-error>
+            <mat-error *ngIf="lozinkaForm.get('novaLozinka')?.hasError('minlength')">
+              Minimum 6 karaktera
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Potvrdi Lozinku</mat-label>
+            <input matInput formControlName="potvrda"
+                   [type]="hidePotvrda ? 'password' : 'text'">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hidePotvrda = !hidePotvrda">
+              <mat-icon>{{ hidePotvrda ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="lozinkaForm.hasError('nepoklapaju')">
+              Lozinke se ne poklapaju
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="accent" type="submit"
+                    [disabled]="lozinkaForm.invalid || loadingLozinka">
+              <mat-icon>lock_reset</mat-icon>
+              {{ loadingLozinka ? 'Menjanje...' : 'Promeni Lozinku' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

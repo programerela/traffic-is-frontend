@@ -1,5 +1,3 @@
-<!-- src/app/shared/layout/main-layout/main-layout.component.html -->
-
 <mat-sidenav-container class="sidenav-container">
   <!-- SIDEBAR -->
   <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened()" class="sidenav">
@@ -59,14 +57,16 @@
           </div>
         </div>
         <mat-divider></mat-divider>
-        <button mat-menu-item>
-          <mat-icon>person</mat-icon>
-          <span>Profil</span>
-        </button>
-        <button mat-menu-item>
+
+          <button mat-menu-item routerLink="/app/profil">
+            <mat-icon>person</mat-icon>
+            <span>Profil</span>
+          </button>
+        <button mat-menu-item routerLink="/app/podesavanja">
           <mat-icon>settings</mat-icon>
           <span>Podešavanja</span>
         </button>
+
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>

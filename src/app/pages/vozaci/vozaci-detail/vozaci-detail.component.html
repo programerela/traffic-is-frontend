@@ -31,9 +31,9 @@
           <h2>{{ vozac()!.ime }} {{ vozac()!.prezime }}</h2>
           <p class="profile-id">ID: #{{ vozac()!.idVozaca }}</p>
           <div class="profile-stats">
-            <mat-chip color="primary">Vozila: {{ vozac()!.brojVozila || 0 }}</mat-chip>
+            <mat-chip color="primary">Vozila: {{ vozila().length }}</mat-chip>
             <mat-chip [color]="(vozac()!.brojKazni || 0) > 0 ? 'warn' : 'accent'">
-              Kazne: {{ vozac()!.brojKazni || 0 }}
+              Kazne: {{brojKazni()}}
             </mat-chip>
           </div>
         </div>

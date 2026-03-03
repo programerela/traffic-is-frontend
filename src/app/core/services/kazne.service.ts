@@ -10,7 +10,7 @@ import { PermissionService } from './premission.service';
   providedIn: 'root'
 })
 export class KazneService {
-  private apiUrl = `${environment.apiUrl}/Kazne`;
+  private apiUrl = `${environment.apiUrl}/kazne`;
   private useMockData = environment.useMockData;
 
   constructor(

@@ -71,7 +71,7 @@
                       <span class="ranking-label">{{ vozac.imeVozaca }} {{ vozac.prezimeVozaca }}</span>
                       <div class="ranking-stats">
                         <span>{{ vozac.brojKazni }} kazni</span>
-                        <span class="amount">{{ vozac.ukupanIznos | number:'1.0-0' }} RSD</span>
+                        <span class="amount">{{ vozac.ukupanIznos ? (vozac.ukupanIznos | number:'1.0-0') + ' RSD' : 'nema neplaćenih' }}</span>
                       </div>
                     </div>
                   </div>
