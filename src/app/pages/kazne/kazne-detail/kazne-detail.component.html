@@ -167,7 +167,12 @@
           <mat-icon>edit</mat-icon>
           Izmeni Kaznu
         </button>
-        <button mat-button color="warn" (click)="deleteKazna()">
+        <button
+          mat-button
+          color="warn"
+          *ngIf="permissionService.canDeleteRecord()"
+          (click)="deleteKazna()"
+        >
           <mat-icon>delete</mat-icon>
           Obriši
         </button>

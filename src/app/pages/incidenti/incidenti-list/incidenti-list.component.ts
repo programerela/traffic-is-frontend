@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IncidentService } from '../../../core/services/incident.service';
 import { IncidentResponseDTO } from '../../../models/incident.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-incidenti-list',
@@ -27,16 +28,16 @@ import { IncidentResponseDTO } from '../../../models/incident.model';
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   templateUrl: './incidenti-list.component.html',
-  styleUrl: './incidenti-list.component.css'
+  styleUrl: './incidenti-list.component.css',
 })
 export class IncidentiListComponent implements OnInit {
   incidenti = signal<IncidentResponseDTO[]>([]);
   filteredIncidenti = signal<IncidentResponseDTO[]>([]);
   loading = signal(true);
-  
+
   displayedColumns: string[] = [
     'idIncidenta',
     'datumVreme',
@@ -44,10 +45,13 @@ export class IncidentiListComponent implements OnInit {
     'tezinaIncidenta',
     'statusIncidenta',
     'vozac',
-    'actions'
+    'actions',
   ];
 
-  constructor(private incidentService: IncidentService) {}
+  constructor(
+    private incidentService: IncidentService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadIncidenti();
@@ -64,16 +68,17 @@ export class IncidentiListComponent implements OnInit {
       error: (error) => {
         console.error('Error loading incidents:', error);
         this.loading.set(false);
-      }
+      },
     });
   }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-    const filtered = this.incidenti().filter(incident => 
-      incident.lokacija.toLowerCase().includes(filterValue) ||
-      incident.tezinaIncidenta.toLowerCase().includes(filterValue) ||
-      incident.statusIncidenta.toLowerCase().includes(filterValue)
+    const filtered = this.incidenti().filter(
+      (incident) =>
+        incident.lokacija.toLowerCase().includes(filterValue) ||
+        incident.tezinaIncidenta.toLowerCase().includes(filterValue) ||
+        incident.statusIncidenta.toLowerCase().includes(filterValue),
     );
     this.filteredIncidenti.set(filtered);
   }
@@ -87,26 +92,26 @@ export class IncidentiListComponent implements OnInit {
         error: (error) => {
           console.error('Error deleting incident:', error);
           alert('Greška pri brisanju incidenta!');
-        }
+        },
       });
     }
   }
 
   getTezinaColor(tezina: string): string {
-    const colors: {[key: string]: string} = {
-      'manji': 'accent',
-      'veci': 'warn',
+    const colors: { [key: string]: string } = {
+      manji: 'accent',
+      veci: 'warn',
       'sa povredenima': 'warn',
-      'sa poginulima': 'warn'
+      'sa poginulima': 'warn',
     };
     return colors[tezina] || 'primary';
   }
 
   getStatusColor(status: string): string {
-    const colors: {[key: string]: string} = {
-      'evidentiran': 'primary',
-      'obraden': 'accent',
-      'prosleden': 'warn'
+    const colors: { [key: string]: string } = {
+      evidentiran: 'primary',
+      obraden: 'accent',
+      prosleden: 'warn',
     };
     return colors[status] || 'primary';
   }

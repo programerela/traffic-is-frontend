@@ -119,7 +119,9 @@
           <mat-icon>edit</mat-icon>
           Izmeni Podatke
         </button>
-        <button (click)="deleteVozac()">
+        <button 
+          *ngIf="permissionService.canDeleteRecord()"
+        (click)="deleteVozac()">
           <mat-icon>delete</mat-icon>
           Obriši
         </button>

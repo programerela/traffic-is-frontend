@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { KazneService } from '../../../core/services/kazne.service';
 import { KaznaResponseDTO } from '../../../models/kazna.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-kazne-list',
@@ -49,7 +50,10 @@ export class KazneListComponent implements OnInit {
     'actions',
   ];
 
-  constructor(private kazneService: KazneService) {}
+  constructor(
+    private kazneService: KazneService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadKazne();

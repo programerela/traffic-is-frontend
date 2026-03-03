@@ -21,7 +21,6 @@
 
   <!-- Vozilo Details -->
   <div *ngIf="!loading() && vozilo()" class="details-grid">
-    
     <!-- Main Info Card -->
     <mat-card class="main-card">
       <mat-card-header>
@@ -77,7 +76,12 @@
           <mat-icon>edit</mat-icon>
           Izmeni Vozilo
         </button>
-        <button mat-button color="warn" (click)="deleteVozilo()">
+        <button
+          mat-button
+          color="warn"
+          *ngIf="permissionService.canDeleteRecord()"
+          (click)="deleteVozilo()"
+        >
           <mat-icon>delete</mat-icon>
           Obriši
         </button>
@@ -185,6 +189,5 @@
         </div>
       </mat-card-content>
     </mat-card>
-
   </div>
 </div>

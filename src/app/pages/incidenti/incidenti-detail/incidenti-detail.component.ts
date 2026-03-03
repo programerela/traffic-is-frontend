@@ -10,6 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { IncidentService } from '../../../core/services/incident.service';
 import { IncidentResponseDTO } from '../../../models/incident.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-incident-detail',
@@ -30,7 +31,8 @@ export class IncidentDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private incidentService: IncidentService
+    private incidentService: IncidentService,
+    public permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {

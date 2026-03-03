@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SignalizacijaResponseDTO, SignalizacijaRequestDTO } from '../../models/signalizacija.model';
 import { MockDataService } from './mock-data.service';
+import { PermissionService } from './premission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class SignalizacijaService {
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService
+    private mockDataService: MockDataService,
+    public permissionService: PermissionService
   ) {}
 
   getAllSignalizacija(): Observable<SignalizacijaResponseDTO[]> {

@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { VozacService } from '../../../core/services/vozac.service';
 import { VoziloService } from '../../../core/services/vozilo.service';
+import { PermissionService } from '../../../core/services/premission.service';
 import { VozacResponseDTO } from '../../../models/vozac.model';
 import { VoziloResponseDTO } from '../../../models/vozilo.model';
 
@@ -40,7 +41,8 @@ export class VozaciDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private vozacService: VozacService,
-    private voziloService: VoziloService
+    private voziloService: VoziloService,
+    public permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {

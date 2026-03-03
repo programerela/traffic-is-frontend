@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { AuthService } from '../../../core/services/auth.service';
+import { PermissionService } from '../../../core/services/premission.service';
 
 interface MenuItem {
   label: string;
@@ -32,14 +33,14 @@ interface MenuItem {
     MatButtonModule,
     MatListModule,
     MatMenuModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css'
+  styleUrl: './main-layout.component.css',
 })
 export class MainLayoutComponent {
   sidenavOpened = signal(true);
-  
+
   menuItems: MenuItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/app/dashboard' },
     { label: 'Vozači', icon: 'person', route: '/app/vozaci' },
@@ -47,18 +48,27 @@ export class MainLayoutComponent {
     { label: 'Incidenti', icon: 'warning', route: '/app/incidenti' },
     { label: 'Kazne', icon: 'gavel', route: '/app/kazne' },
     { label: 'Obaveštenja', icon: 'notifications', route: '/app/obavestenja' },
-    { 
-      label: 'Analitika', 
-      icon: 'bar_chart', 
+    {
+      label: 'Analitika',
+      icon: 'bar_chart',
       route: '/app/analitika',
-      roles: ['admin', 'rukovodilac']
-    }
+      roles: ['admin', 'rukovodilac'],
+    },
+    {
+      label: 'Korisnici',
+      icon: 'manage_accounts',
+      route: '/app/korisnici',
+      roles: ['admin'],
+    },
   ];
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    public permissionService: PermissionService,
+  ) {}
 
   toggleSidenav(): void {
-    this.sidenavOpened.update(value => !value);
+    this.sidenavOpened.update((value) => !value);
   }
 
   logout(): void {

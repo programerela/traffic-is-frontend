@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Vozac, VozacResponseDTO, VozacRequestDTO } from '../../models/vozac.model';
 import { MockDataService } from './mock-data.service';
+import { PermissionService } from './premission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class VozacService {
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService
+    private mockDataService: MockDataService,
+    public permissionService: PermissionService
   ) {}
 
   // GET /api/vozaci

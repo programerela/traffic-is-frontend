@@ -77,6 +77,7 @@
             </button>
             <button
               mat-icon-button
+              *ngIf="permissionService.canDeleteRecord()"
               (click)="deleteZahtev(zahtev.idZahteva)"
               matTooltip="Obriši"
               color="warn"
@@ -141,7 +142,12 @@
           <button mat-icon-button [routerLink]="[zahtev.idZahteva, 'edit']" color="primary">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button (click)="deleteZahtev(zahtev.idZahteva)" color="warn">
+          <button
+            mat-icon-button
+            *ngIf="permissionService.canDeleteRecord()"
+            (click)="deleteZahtev(zahtev.idZahteva)"
+            color="warn"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </div>

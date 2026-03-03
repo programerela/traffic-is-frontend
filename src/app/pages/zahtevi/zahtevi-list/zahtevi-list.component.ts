@@ -12,17 +12,26 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ZahtevService } from '../../../core/services/zahtev.service';
 import { ZahtevResponseDTO } from '../../../models/other.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-zahtevi-list',
   standalone: true,
   imports: [
-    CommonModule, RouterLink, MatTableModule, MatButtonModule, MatIconModule,
-    MatCardModule, MatChipsModule, MatInputModule, MatFormFieldModule,
-    MatProgressSpinnerModule, MatTooltipModule
+    CommonModule,
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatChipsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   templateUrl: `./zahtevi-list.component.html`,
-  styleUrls: ['./zahtevi-list.component.css']
+  styleUrls: ['./zahtevi-list.component.css'],
 })
 export class ZahteviListComponent implements OnInit {
   zahtevi = signal<ZahtevResponseDTO[]>([]);
@@ -30,7 +39,10 @@ export class ZahteviListComponent implements OnInit {
   loading = signal(true);
   displayedColumns = ['idZahteva', 'datumVreme', 'tipZahteva', 'opis', 'status', 'actions'];
 
-  constructor(private zahtevService: ZahtevService) {}
+  constructor(
+    private zahtevService: ZahtevService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadZahtevi();
@@ -47,16 +59,17 @@ export class ZahteviListComponent implements OnInit {
       error: (error) => {
         console.error('Error:', error);
         this.loading.set(false);
-      }
+      },
     });
   }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-    const filtered = this.zahtevi().filter(z =>
-      z.tipZahteva.toLowerCase().includes(filterValue) ||
-      (z.opis && z.opis.toLowerCase().includes(filterValue)) ||
-      z.status.toLowerCase().includes(filterValue)
+    const filtered = this.zahtevi().filter(
+      (z) =>
+        z.tipZahteva.toLowerCase().includes(filterValue) ||
+        (z.opis && z.opis.toLowerCase().includes(filterValue)) ||
+        z.status.toLowerCase().includes(filterValue),
     );
     this.filteredZahtevi.set(filtered);
   }
@@ -65,25 +78,25 @@ export class ZahteviListComponent implements OnInit {
     if (confirm('Da li ste sigurni?')) {
       this.zahtevService.deleteZahtev(id).subscribe({
         next: () => this.loadZahtevi(),
-        error: () => alert('Greška!')
+        error: () => alert('Greška!'),
       });
     }
   }
 
   getStatusColor(status: string): string {
-    const colors: {[key: string]: string} = {
-      'primljen': 'primary',
+    const colors: { [key: string]: string } = {
+      primljen: 'primary',
       'u obradi': 'accent',
-      'resen': 'warn'
+      resen: 'warn',
     };
     return colors[status] || 'primary';
   }
 
   getTipIcon(tip: string): string {
-    const icons: {[key: string]: string} = {
+    const icons: { [key: string]: string } = {
       'kvar signalizacije': 'warning',
       'zahtev za izvestaj': 'description',
-      'prijava gradjanina': 'report'
+      'prijava gradjanina': 'report',
     };
     return icons[tip] || 'assignment';
   }

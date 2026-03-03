@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { IncidentResponseDTO, IncidentRequestDTO } from '../../models/incident.model';
 import { MockDataService } from './mock-data.service';
+import { PermissionService } from './premission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class IncidentService {
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService
+    private mockDataService: MockDataService,
+    public permissionService: PermissionService
   ) {}
 
   getAllIncidenti(): Observable<IncidentResponseDTO[]> {

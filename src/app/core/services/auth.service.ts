@@ -16,19 +16,19 @@ export interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/korisnici`;
   private useMockData = environment.useMockData;
-  
+
   // Signals za reactive state
   currentUser = signal<KorisnikDTO | null>(null);
   isAuthenticated = signal<boolean>(false);
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
   ) {
     // Proveri da li postoji sačuvan user u localStorage
     this.loadUserFromStorage();
@@ -40,7 +40,7 @@ export class AuthService {
     if (this.useMockData) {
       return this.mockLogin(username, password);
     }
-    
+
     // Inače koristi pravi API
     return this.loginWithAPI(username, password);
   }
@@ -53,36 +53,36 @@ export class AuthService {
         username: 'admin',
         role: 'admin',
         ime: 'Marko',
-        prezime: 'Marković'
+        prezime: 'Marković',
       },
       {
         idUser: 2,
         username: 'policajac1',
         role: 'policajac',
         ime: 'Ana',
-        prezime: 'Anić'
+        prezime: 'Anić',
       },
       {
         idUser: 3,
         username: 'rukovodilac1',
         role: 'rukovodilac',
         ime: 'Petar',
-        prezime: 'Petrović'
-      }
+        prezime: 'Petrović',
+      },
     ];
 
     // Simuliraj API delay
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
-        const user = mockUsers.find(u => u.username === username);
-        
+        const user = mockUsers.find((u) => u.username === username);
+
         // Proveri username i password (svi imaju istu lozinku: password123)
         if (user && password === 'password123') {
           // Sačuvaj u localStorage
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUser.set(user);
           this.isAuthenticated.set(true);
-          
+
           observer.next(user);
           observer.complete();
         } else {
@@ -94,13 +94,18 @@ export class AuthService {
 
   // PRAVI LOGIN - koristi kada pokreneš backend
   private loginWithAPI(username: string, password: string): Observable<KorisnikDTO> {
-    return this.http.get<KorisnikDTO>(`${this.apiUrl}/username/${username}`).pipe(
-      tap(korisnik => {
-        localStorage.setItem('currentUser', JSON.stringify(korisnik));
-        this.currentUser.set(korisnik);
-        this.isAuthenticated.set(true);
+    return this.http
+      .post<KorisnikDTO>(`${this.apiUrl}/korisnici/login`, {
+        username,
+        password,
       })
-    );
+      .pipe(
+        tap((korisnik) => {
+          localStorage.setItem('currentUser', JSON.stringify(korisnik));
+          this.currentUser.set(korisnik);
+          this.isAuthenticated.set(true);
+        }),
+      );
   }
 
   register(korisnik: Partial<Korisnik>): Observable<KorisnikDTO> {

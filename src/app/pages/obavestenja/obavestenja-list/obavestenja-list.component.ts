@@ -10,16 +10,24 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ObavestenjeService } from '../../../core/services/notification.service';
 import { ObavestenjeResponseDTO } from '../../../models/other.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-obavestenja-list',
   standalone: true,
   imports: [
-    CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule,
-    MatChipsModule, MatProgressSpinnerModule, MatTooltipModule, MatBadgeModule
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatBadgeModule,
   ],
   templateUrl: './obavestenja-list.component.html',
-  styleUrls: ['./obavestenja-list.component.css']
+  styleUrls: ['./obavestenja-list.component.css'],
 })
 export class ObavestenjaListComponent implements OnInit {
   obavestenja = signal<ObavestenjeResponseDTO[]>([]);
@@ -28,11 +36,14 @@ export class ObavestenjaListComponent implements OnInit {
   selectedFilter = 'all';
 
   onFilterChange(event: any) {
-  this.selectedFilter = event.value;
-  this.applyFilterByPriority();
-}
+    this.selectedFilter = event.value;
+    this.applyFilterByPriority();
+  }
 
-  constructor(private obavestenjeService: ObavestenjeService) {}
+  constructor(
+    private obavestenjeService: ObavestenjeService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadObavestenja();
@@ -49,7 +60,7 @@ export class ObavestenjaListComponent implements OnInit {
       error: (error) => {
         console.error('Error:', error);
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -57,7 +68,7 @@ export class ObavestenjaListComponent implements OnInit {
     if (this.selectedFilter === 'all') {
       this.filteredObavestenja.set(this.obavestenja());
     } else {
-      const filtered = this.obavestenja().filter(o => o.prioritet === this.selectedFilter);
+      const filtered = this.obavestenja().filter((o) => o.prioritet === this.selectedFilter);
       this.filteredObavestenja.set(filtered);
     }
   }
@@ -66,16 +77,16 @@ export class ObavestenjaListComponent implements OnInit {
     if (confirm('Da li ste sigurni da želite da uklonite ovo obaveštenje?')) {
       this.obavestenjeService.deleteObavestenje(id).subscribe({
         next: () => this.loadObavestenja(),
-        error: () => alert('Greška!')
+        error: () => alert('Greška!'),
       });
     }
   }
 
   getPrioritetIcon(prioritet: string): string {
-    const icons: {[key: string]: string} = {
-      'visok': 'priority_high',
-      'srednji': 'error_outline',
-      'nizak': 'info'
+    const icons: { [key: string]: string } = {
+      visok: 'priority_high',
+      srednji: 'error_outline',
+      nizak: 'info',
     };
     return icons[prioritet] || 'notifications';
   }

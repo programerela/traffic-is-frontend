@@ -87,7 +87,7 @@
                     <span class="info-value">{{ incident()!.statusIncidenta }}</span>
                   </div>
                 </div>
-                
+
                 <div class="info-item" *ngIf="incident()!.statusIncidenta === 'obradjen'">
                   <mat-icon>person_check</mat-icon>
                   <div>
@@ -211,7 +211,7 @@
           <mat-icon>edit</mat-icon>
           Izmeni Incident
         </button>
-        <button (click)="deleteIncident()">
+        <button *ngIf="permissionService.canDeleteRecord()" (click)="deleteIncident()">
           <mat-icon>delete</mat-icon>
           Obriši
         </button>

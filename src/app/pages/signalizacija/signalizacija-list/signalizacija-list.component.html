@@ -94,6 +94,7 @@
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button 
+                    *ngIf="permissionService.canDeleteRecord()"
                     (click)="deleteSignalizacija(item.idSignalizacije)"
                     matTooltip="Obriši"
                     color="warn">

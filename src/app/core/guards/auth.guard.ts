@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { PermissionService } from '../services/premission.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -32,4 +33,36 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
     router.navigate(['/dashboard']);
     return false;
   };
+};
+export const canDeleteGuard: CanActivateFn = (route, state) => {
+  const permissionService = inject(PermissionService);
+  const router = inject(Router);
+
+  if (permissionService.canDeleteRecord()) {
+    return true;
+  }
+  router.navigate(['/app/dashboard']);
+  return false;
+};
+
+export const canManageUsersGuard: CanActivateFn = (route, state) => {
+  const permissionService = inject(PermissionService);
+  const router = inject(Router);
+
+  if (permissionService.canManageUsers()) {
+    return true;
+  }
+  router.navigate(['/app/dashboard']);
+  return false;
+};
+
+export const canAccessAnalyticsGuard: CanActivateFn = (route, state) => {
+  const permissionService = inject(PermissionService);
+  const router = inject(Router);
+
+  if (permissionService.canAccessAnalytics()) {
+    return true;
+  }
+  router.navigate(['/app/dashboard']);
+  return false;
 };

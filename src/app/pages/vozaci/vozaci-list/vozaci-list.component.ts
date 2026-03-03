@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { VozacService } from '../../../core/services/vozac.service';
 import { VozacResponseDTO } from '../../../models/vozac.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-vozaci-list',
@@ -38,7 +39,10 @@ export class VozaciListComponent implements OnInit {
   loading = signal(true);
   displayedColumns = ['idVozaca', 'ime', 'jmbg', 'brojVozacke', 'telefon', 'statistika', 'actions'];
 
-  constructor(private vozacService: VozacService) {}
+  constructor(
+    private vozacService: VozacService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadVozaci();

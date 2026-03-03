@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { KazneService } from '../../../core/services/kazne.service';
 import { KaznaResponseDTO } from '../../../models/kazna.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-kazne-detail',
@@ -37,6 +38,7 @@ export class KazneDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private kazneService: KazneService,
+    public permissionService: PermissionService,
   ) {}
 
   ngOnInit(): void {

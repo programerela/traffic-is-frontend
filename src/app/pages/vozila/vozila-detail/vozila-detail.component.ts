@@ -15,6 +15,7 @@ import { VoziloService } from '../../../core/services/vozilo.service';
 import { VozacService } from '../../../core/services/vozac.service';
 import { VoziloResponseDTO } from '../../../models/vozilo.model';
 import { VozacResponseDTO } from '../../../models/vozac.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-vozila-detail',
@@ -43,7 +44,8 @@ export class VozilaDetailComponent implements OnInit {
     private voziloService: VoziloService,
     private vozacService: VozacService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public permissionService: PermissionService
   ) {
     this.ownerForm = this.fb.group({
       idVozaca: [null]

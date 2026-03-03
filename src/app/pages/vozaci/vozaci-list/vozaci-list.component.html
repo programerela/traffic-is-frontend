@@ -93,6 +93,7 @@
             </button>
             <button
               mat-icon-button
+              *ngIf="permissionService.canDeleteRecord()"
               (click)="deleteVozac(vozac.idVozaca)"
               matTooltip="Obriši"
               color="warn"
@@ -179,7 +180,12 @@
           <button mat-icon-button [routerLink]="[vozac.idVozaca, 'edit']" color="primary">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button (click)="deleteVozac(vozac.idVozaca)" color="warn">
+          <button
+            mat-icon-button
+            *ngIf="permissionService.canDeleteRecord()"
+            (click)="deleteVozac(vozac.idVozaca)"
+            color="warn"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </div>

@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { VoziloService } from '../../../core/services/vozilo.service';
 import { VoziloResponseDTO } from '../../../models/vozilo.model';
+import { PermissionService } from '../../../core/services/premission.service';
 
 @Component({
   selector: 'app-vozila-list',
@@ -39,7 +40,10 @@ export class VozilaListComponent implements OnInit {
 
   displayedColumns = ['idVozila', 'vozilo', 'registracija', 'godiste', 'actions'];
 
-  constructor(private voziloService: VoziloService) {}
+  constructor(
+    private voziloService: VoziloService,
+    public permissionService: PermissionService,
+  ) {}
 
   ngOnInit(): void {
     this.loadVozila();

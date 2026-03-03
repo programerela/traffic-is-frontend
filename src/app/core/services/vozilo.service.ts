@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { VoziloResponseDTO, VoziloRequestDTO } from '../../models/vozilo.model';
 import { MockDataService } from './mock-data.service';
+import { PermissionService } from './premission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class VoziloService {
 
   constructor(
     private http: HttpClient,
-    private mockDataService: MockDataService
+    private mockDataService: MockDataService,
+    public permissionService: PermissionService
   ) {}
 
   getAllVozila(): Observable<VoziloResponseDTO[]> {
