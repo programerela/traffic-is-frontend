@@ -37,7 +37,7 @@ export interface PeriodIzvestaj {
   period: string;
   ukupnoIncidenata: number;
   incidentiPoTezini: { [key: string]: number };
-  incidentiPoStatusu: { [key: string]: number };
+  incidentiPoStatusu?: { [key: string]: number };
   ukupnoKazni: number;
   ukupanIznosKazni: number;
   ukupnoPovređenih: number;
