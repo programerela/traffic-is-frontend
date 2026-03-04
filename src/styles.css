@@ -37,6 +37,10 @@ body {
   padding: 0 5px 0 10px !important;
 }
 
+.mat-datepicker-content .mat-calendar {
+  background-color: white !important;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 10px;
