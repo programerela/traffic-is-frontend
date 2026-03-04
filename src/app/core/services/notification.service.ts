@@ -10,7 +10,7 @@ import { PermissionService } from './premission.service';
   providedIn: 'root'
 })
 export class ObavestenjeService {
-  private apiUrl = `${environment.apiUrl}/obavestenja`;
+  private apiUrl = `${environment.apiUrl}/notifications`;
   private useMockData = environment.useMockData;
 
   constructor(
