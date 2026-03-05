@@ -5,11 +5,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepicker } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
 import { VozacService } from '../../../core/services/vozac.service';
 import { VozacRequestDTO } from '../../../models/vozac.model';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-vozaci-form',
@@ -21,8 +23,10 @@ import { VozacRequestDTO } from '../../../models/vozac.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+],
   templateUrl: './vozaci-form.component.html',
   styleUrl: './vozaci-form.component.css'
 })
@@ -44,7 +48,9 @@ export class VozaciFormComponent implements OnInit {
       jmbg: ['', [Validators.required, Validators.minLength(13), Validators.maxLength(13)]],
       brojVozacke: ['', [Validators.required, Validators.maxLength(20)]],
       adresa: [''],
-      telefon: ['']
+      telefon: [''],
+      datumIstekaDozvole: [''],
+      kazneniPoeni: [0]
     });
   }
 

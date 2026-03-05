@@ -72,12 +72,10 @@ export const routes: Routes = [
       },
       {
         path: 'korisnici',
-        loadComponent: () =>
-          import('./pages/korisnici/korisnici-list/korisnici-list.component').then(
-            (m) => m.KorisniciListComponent,
-          ),
+        loadChildren: () => import('./pages/korisnici/korisnici.routes').then((m) => m.KORISNICI_ROUTES),
         canActivate: [authGuard, canManageUsersGuard],
       },
+      
       {
         path: 'profil',
         loadComponent: () =>

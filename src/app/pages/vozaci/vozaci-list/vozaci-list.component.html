@@ -60,7 +60,7 @@
         <td mat-cell *matCellDef="let vozac">
           <div class="stats-chips">
             <mat-chip color="primary">Vozila: {{ vozac.brojVozila || 0 }}</mat-chip>
-            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'">
+            <mat-chip [color]="vozac.brojKazni > 0 ? 'warn' : 'accent'">
               Kazne: {{ vozac.brojKazni || 0 }}
             </mat-chip>
             <mat-chip [color]="(vozac.kazneniPoeni ?? 0) >= 10 ? 'warn' : 'primary'">
@@ -115,7 +115,7 @@
           <span class="mobile-card-id">#{{ vozac.idVozaca }}</span>
           <div class="mobile-card-chips">
             <mat-chip color="primary">Vozila: {{ vozac.brojVozila || 0 }}</mat-chip>
-            <mat-chip [color]="(vozac.brojKazni ?? 0) > 0 ? 'warn' : 'accent'">
+            <mat-chip [color]="vozac.brojKazni > 0 ? 'warn' : 'accent'">
               Kazne: {{ vozac.brojKazni || 0 }}
             </mat-chip>
           </div>

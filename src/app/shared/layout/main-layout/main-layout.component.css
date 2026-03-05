@@ -7,9 +7,9 @@
 
 /* SIDEBAR */
 .sidenav {
-  width: 300px;
+  width: 250px;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #396bbb;
+  background-color: #4371bb;
   padding-right: 5px;
   color: white;
   transition: width 0.3s ease;
@@ -38,12 +38,12 @@
 /* Navigation List */
 .nav-list {
   padding: 0.5rem 0rem 0.5rem 1rem;
-  width: 70%;
+  width: 90%;
 }
 
 .nav-item {
   color: rgba(255, 255, 255, 0.7);
-  margin: 0.25rem 0.5rem;
+  margin: 0.1rem 0.2rem;
   width: calc(100% - 1rem);
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -184,6 +184,10 @@
     display: none;
   }
 
+  .nav-list {
+    padding-left: 1.5rem;
+  }
+
   .user-name {
     display: none;
   }
@@ -195,11 +199,11 @@
 
 @media (max-width: 480px) {
   .sidenav {
-    width: 60px;
+    width: 4rem;
   }
 
   .nav-list {
-    padding: 0;
+    padding-left: 0.1px;
   }
 
   .nav-item {

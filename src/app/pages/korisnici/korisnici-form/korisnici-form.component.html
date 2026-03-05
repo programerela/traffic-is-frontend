@@ -1,0 +1,96 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>{{ isEditMode ? 'Izmeni Korisnika' : 'Novi Korisnik' }}</h1>
+      <p class="page-subtitle">
+        {{ isEditMode ? 'Ažuriranje podataka o korisniku' : 'Kreiranje novog korisničkog naloga' }}
+      </p>
+    </div>
+  </div>
+
+  <mat-card class="form-card">
+    <form [formGroup]="korisnikForm" (ngSubmit)="onSubmit()">
+      <div class="form-section">
+        <h3>Lični Podaci</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Ime</mat-label>
+            <input matInput formControlName="ime" />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="korisnikForm.get('ime')?.hasError('required')"
+              >Ime je obavezno</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Prezime</mat-label>
+            <input matInput formControlName="prezime" />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="korisnikForm.get('prezime')?.hasError('required')"
+              >Prezime je obavezno</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Nalog i Pristup</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" [readonly]="isEditMode" />
+            <mat-icon matPrefix>alternate_email</mat-icon>
+            <mat-error *ngIf="korisnikForm.get('username')?.hasError('required')"
+              >Username je obavezan</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Uloga</mat-label>
+            <mat-select formControlName="role">
+              <mat-option value="policajac"> <mat-icon>badge</mat-icon> Policajac </mat-option>
+              <mat-option value="rukovodilac">
+                <mat-icon>manage_accounts</mat-icon> Rukovodilac
+              </mat-option>
+              <mat-option value="admin">
+                <mat-icon>admin_panel_settings</mat-icon> Admin
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>security</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{
+            isEditMode ? 'Nova Lozinka (ostavite prazno da ne menjate)' : 'Lozinka'
+          }}</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="korisnikForm.get('password')?.hasError('required')"
+            >Lozinka je obavezna</mat-error
+          >
+          <mat-error *ngIf="korisnikForm.get('password')?.hasError('minlength')"
+            >Minimum 6 karaktera</mat-error
+          >
+          <mat-hint *ngIf="isEditMode">Ostavite prazno da zadržite trenutnu lozinku</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">Otkaži</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="korisnikForm.invalid || loading"
+        >
+          <mat-icon>{{ isEditMode ? 'save' : 'person_add' }}</mat-icon>
+          {{ isEditMode ? 'Sačuvaj Izmene' : 'Kreiraj Korisnika' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

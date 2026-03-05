@@ -44,6 +44,20 @@
           <mat-label>Telefon</mat-label>
           <input matInput formControlName="telefon" />
         </mat-form-field>
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Datum Isteka Vozačke</mat-label>
+            <input matInput [matDatepicker]="pickerDozvola" formControlName="datumIstekaDozvole" />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerDozvola"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDozvola></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Kazneni Poeni</mat-label>
+            <input matInput type="number" formControlName="kazneniPoeni" min="0" />
+            <mat-icon matPrefix>warning</mat-icon>
+          </mat-form-field>
+        </div>
       </div>
       <div class="form-section" *ngIf="!isEditMode">
         <mat-icon style="color: #64748b; vertical-align: middle">info</mat-icon>
